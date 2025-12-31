@@ -83,7 +83,7 @@ install -Dpm644 _dotter %{buildroot}%{zsh_completions_dir}/_dotter
 %endif
 
 %files
-%license LICENSE
+%license LICENSE.md
 %license LICENSE.dependencies
 %license cargo-vendor.txt
 %doc README.md
