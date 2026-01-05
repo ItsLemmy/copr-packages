@@ -7,7 +7,7 @@ License:        GPL-3.0
 URL:            https://github.com/imputnet/helium
 Source0:        https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
 
-BuildArch:      x86_64
+ExclusiveArch:  x86_64
 
 Requires:       desktop-file-utils
 Requires:       gtk3
