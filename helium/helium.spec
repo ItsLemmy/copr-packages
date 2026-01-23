@@ -1,5 +1,5 @@
 Name:           helium
-Version:        0.7.10.1
+Version:        0.8.3.1
 Release:        1%{?dist}
 Summary:        Helium Browser - Privacy-focused Chromium fork
 
