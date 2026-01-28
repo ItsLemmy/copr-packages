@@ -6,6 +6,8 @@ Summary:        Cross-platform Audio Visualizer
 License:        MIT
 URL:            https://github.com/karlstav/cava
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+# Patch to disable AX_CHECK_GL which is broken in Fedora 43 autoconf-archive
+Patch0:         cava-disable-gl-check.patch
 
 BuildRequires:  autoconf
 BuildRequires:  autoconf-archive
@@ -26,7 +28,7 @@ CAVA is a bar spectrum audio visualizer for terminal or desktop (SDL).
 It works on Linux, FreeBSD, macOS, and Windows.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{version} -p1
 
 %build
 ./autogen.sh
@@ -40,7 +42,7 @@ It works on Linux, FreeBSD, macOS, and Windows.
 %license LICENSE
 %doc README.md
 %{_bindir}/cava
-%{_mandir}/man1/cava.1*
+%{_datadir}/consolefonts/cava.psf
 
 %changelog
 %autochangelog
