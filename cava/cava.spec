@@ -21,7 +21,6 @@ BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  pipewire-devel
 BuildRequires:  portaudio-devel
 BuildRequires:  SDL2-devel
-BuildRequires:  sndio-devel
 
 %description
 CAVA is a bar spectrum audio visualizer for terminal or desktop (SDL).
