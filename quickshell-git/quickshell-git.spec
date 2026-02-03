@@ -65,7 +65,7 @@ tray, MPRIS, PipeWire, and window managers like Hyprland and i3/Sway.
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DDISTRIBUTOR="COPR (Fedora)" \
     -DDISTRIBUTOR_DEBUGINFO_AVAILABLE=YES \
-    -DINSTALL_QML_PREFIX=%{_libdir}/qt6/qml \
+    -DINSTALL_QMLDIR=%{_libdir}/qt6/qml \
     -DCRASH_REPORTER=OFF
 
 %cmake_build
