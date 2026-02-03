@@ -23,13 +23,11 @@ BuildRequires:  qt6-qtdeclarative-devel >= 6.6
 BuildRequires:  qt6-qtdeclarative-private-devel >= 6.6
 BuildRequires:  qt6-qtshadertools-devel
 BuildRequires:  qt6-qtwayland-devel
-BuildRequires:  qt6-qtwayland-private-devel
 BuildRequires:  qt6-qtsvg-devel
 
 # Build dependencies
 BuildRequires:  spirv-tools
 BuildRequires:  cli11-devel
-BuildRequires:  breakpad-devel
 
 # Wayland dependencies
 BuildRequires:  wayland-devel
@@ -67,7 +65,8 @@ tray, MPRIS, PipeWire, and window managers like Hyprland and i3/Sway.
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DDISTRIBUTOR="COPR (Fedora)" \
     -DDISTRIBUTOR_DEBUGINFO_AVAILABLE=YES \
-    -DINSTALL_QML_PREFIX=%{_libdir}/qt6/qml
+    -DINSTALL_QML_PREFIX=%{_libdir}/qt6/qml \
+    -DCRASH_REPORTER=OFF
 
 %cmake_build
 
