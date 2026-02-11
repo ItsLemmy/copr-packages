@@ -191,6 +191,7 @@ install -d -m755 -pv %{buildroot}%{_sysconfdir}/%{name}/config.d
 %{bash_completions_dir}/%{name}*
 %{fish_completions_dir}/%{name}*.fish
 %{zsh_completions_dir}/_%{name}*
+%{_datadir}/icons/%{name}.png
 
 %files config-upstream
 %config(noreplace) %{_sysconfdir}/%{name}/config
