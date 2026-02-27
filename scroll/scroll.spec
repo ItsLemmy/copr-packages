@@ -4,7 +4,7 @@
 
 Name:           scroll
 Version:        1.13~dev
-Release:        1.%{date}-git%{?dist}
+Release:        1.%{date}.git%{?dist}
 Summary:        i3-compatible Wayland compositor with a scrolling layout
 License:        MIT
 URL:            https://github.com/dawsers/scroll
