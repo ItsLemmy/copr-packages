@@ -7,7 +7,7 @@ Summary: Convert Markdown documents to PDF using Typst
 License: MIT
 URL:     https://github.com/cosformula/mdxport-cli
 Source0: https://github.com/cosformula/mdxport-cli/archive/refs/tags/v%{version}.tar.gz
-Source1: mdxport-cli-%{version}-vendor.tar.gz
+Source1: https://github.com/ItsLemmy/copr-packages/releases/download/mdxport-cli-%{version}/mdxport-cli-%{version}-vendor.tar.gz
 
 BuildRequires: cargo
 BuildRequires: rust
