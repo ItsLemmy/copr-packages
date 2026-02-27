@@ -1,10 +1,10 @@
 %global commit  1298863f51c94572501e09f89767a8085843a558
 %global shortcommit %(c=%{commit}; echo ${c:0:8})
-%global date    20260209
+%global date    20260227
 
 Name:           scroll
 Version:        1.13~dev
-Release:        1.%{date}git%{shortcommit}%{?dist}
+Release:        1.%{date}-git%{?dist}
 Summary:        i3-compatible Wayland compositor with a scrolling layout
 License:        MIT
 URL:            https://github.com/dawsers/scroll
