@@ -8,15 +8,10 @@ Summary:    Performance Optimizer Observation Platform
 License:    MIT
 URL:        https://github.com/andrewrk/poop
 
-%ifarch x86_64
 Source0:    https://github.com/andrewrk/poop/releases/download/%{version}/x86_64-linux-poop
-%endif
-%ifarch aarch64
-Source0:    https://github.com/andrewrk/poop/releases/download/%{version}/aarch64-linux-poop
-%endif
 Source1:    https://raw.githubusercontent.com/andrewrk/poop/%{version}/LICENSE
 
-ExclusiveArch: x86_64 aarch64
+ExclusiveArch: x86_64
 
 %description
 poop (Performance Optimizer Observation Platform) is a command line
@@ -31,7 +26,7 @@ cp %{SOURCE1} LICENSE
 # pre-built binary
 
 %install
-install -Dpm 0755 %{SOURCE0} %{buildroot}%{_bindir}/poop
+install -Dpm 0755 %{SOURCE0} %{buildroot}%{_bindir}/%{name}
 
 %files
 %license LICENSE
