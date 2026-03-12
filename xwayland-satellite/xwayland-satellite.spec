@@ -4,7 +4,7 @@
 %global branch main
 
 Name:           xwayland-satellite-git
-Version:        0.8
+Version:        0.8.1
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors
 
