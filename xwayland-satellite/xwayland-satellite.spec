@@ -3,7 +3,7 @@
 %global forgeurl https://github.com/Supreeeme/xwayland-satellite
 %global branch main
 
-Name:           xwayland-satellite-git
+Name:           xwayland-satellite
 Version:        0.8.1
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors
