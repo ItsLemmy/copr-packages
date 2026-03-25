@@ -1,7 +1,6 @@
 %global commit  d5c08ae343955b47aa9fe5cf77254c32cf8d519d
 %global shortcommit %(c=%{commit}; echo ${c:0:8})
-%global date    20260227
-
+%global date    20260325
 Name:           scroll
 Version:        1.13~dev
 Release:        1.%{date}.git%{?dist}
