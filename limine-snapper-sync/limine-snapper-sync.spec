@@ -54,7 +54,7 @@ cp build/install/*/lib/*.jar \
 
 cat > %{buildroot}/usr/lib/limine/limine-snapper-sync << 'LAUNCHER'
 #!/bin/bash
-exec java -cp '/usr/lib/limine/jlib/*' org.limine.snapper.Main "$@"
+exec java --enable-preview -cp '/usr/lib/limine/jlib/*' org.limine.snapper.Main "$@"
 LAUNCHER
 chmod 0755 %{buildroot}/usr/lib/limine/limine-snapper-sync
 
