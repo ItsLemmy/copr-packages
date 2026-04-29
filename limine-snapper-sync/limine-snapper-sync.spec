@@ -34,6 +34,11 @@ state.
 %prep
 %autosetup -n limine-snapper-sync-%{version}
 
+# Remove GraalVM native-image plugin — we build a JVM distribution, not a native binary,
+# and the plugin's toolchain detection fails with Java 25.
+sed -i '/org.graalvm.buildtools.native/d' build.gradle.kts
+sed -i '/graalvmNative/,/^}/d' build.gradle.kts
+
 %build
 export JAVA_HOME=%{_jvmdir}/java-25-openjdk
 
