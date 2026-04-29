@@ -38,7 +38,7 @@ state.
 export JAVA_HOME=%{_jvmdir}/java-25-openjdk
 
 # Download Gradle (not packaged in Fedora)
-%global gradle_version 8.11
+%global gradle_version 8.14
 curl -L "https://services.gradle.org/distributions/gradle-%{gradle_version}-bin.zip" \
     -o gradle.zip
 unzip -q gradle.zip
