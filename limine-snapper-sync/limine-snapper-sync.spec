@@ -43,7 +43,7 @@ sed -i '/graalvmNative/,/^}/d' build.gradle.kts
 export JAVA_HOME=%{_jvmdir}/java-25-openjdk
 
 # Download Gradle (not packaged in Fedora)
-%global gradle_version 9.5
+%global gradle_version 9.5.0
 curl -L "https://services.gradle.org/distributions/gradle-%{gradle_version}-bin.zip" \
     -o gradle.zip
 unzip -q gradle.zip
