@@ -45,7 +45,7 @@ BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 17.1.0
 BuildRequires:  pkgconfig(hwdata)
 BuildRequires:  pkgconfig(lcms2)
-BuildRequires:  (pkgconfig(libdisplay-info) >= 0.1.1 with pkgconfig(libdisplay-info) < 0.3)
+BuildRequires:  (pkgconfig(libdisplay-info) >= 0.2.0 with pkgconfig(libdisplay-info) < 0.4)
 BuildRequires:  (pkgconfig(libliftoff) >= 0.5.0 with pkgconfig(libliftoff) < 0.6)
 BuildRequires:  pkgconfig(libseat)
 BuildRequires:  pkgconfig(vulkan) >= 1.2.182
