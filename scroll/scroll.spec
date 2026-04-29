@@ -1,4 +1,4 @@
-%global commit  d5c08ae343955b47aa9fe5cf77254c32cf8d519d
+%global commit  0aa1e37b7f79237bd78a67ea5d5c410823a6bc06
 %global shortcommit %(c=%{commit}; echo ${c:0:8})
 %global date    20260325
 Name:           scroll
