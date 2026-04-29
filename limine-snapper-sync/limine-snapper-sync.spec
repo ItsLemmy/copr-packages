@@ -11,14 +11,14 @@ Source0:        https://gitlab.com/Zesko/limine-snapper-sync/-/archive/%{version
 
 ExclusiveArch:  x86_64
 
-BuildRequires:  java-21-openjdk-devel
+BuildRequires:  java-25-openjdk-devel
 BuildRequires:  curl
 BuildRequires:  unzip
 BuildRequires:  systemd-rpm-macros
 # Gradle and Maven dependencies are downloaded at build time; network must be enabled in COPR
 # (Project settings -> Enable internet access during builds)
 
-Requires:       java-21-openjdk-headless
+Requires:       java-25-openjdk-headless
 Requires:       bash
 Requires:       snapper
 Requires:       btrfs-progs
@@ -35,9 +35,9 @@ state.
 %autosetup -n limine-snapper-sync-%{version}
 
 %build
-export JAVA_HOME=%{_jvmdir}/java-21-openjdk
+export JAVA_HOME=%{_jvmdir}/java-25-openjdk
 
-# Download Gradle (not packaged in Fedora 43)
+# Download Gradle (not packaged in Fedora)
 %global gradle_version 8.11
 curl -L "https://services.gradle.org/distributions/gradle-%{gradle_version}-bin.zip" \
     -o gradle.zip
