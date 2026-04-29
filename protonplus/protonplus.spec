@@ -1,4 +1,4 @@
-%global 	SHA256SUM0 e09bd8cdfe3d622a15b142b93b317af055858c50ddd058a5a3f009208f985edd
+%global 	SHA256SUM0 824c7918636f2ba97b68f004cea3bf1da876dab6b39a80c049fc66e51621b660
 %define         appid com.vysp3r.ProtonPlus
 
 Name:           protonplus
@@ -30,8 +30,8 @@ BuildRequires:  pkgconfig(libsoup-3.0)
 # Need for TLS support
 Requires:       glib-networking
 
-Obsoletes:  	protonup-qt
-Obsoletes:	protonplus-next
+Obsoletes:  	protonup-qt < %{version}-%{release}
+Obsoletes:	protonplus-next < %{version}-%{release}
 
 %description
 ProtonPlus is a simple and powerful manager for:
@@ -72,4 +72,5 @@ appstream-util validate-relax --nonet \
 %{_datadir}/glib-2.0/schemas/%{appid}.gschema.xml
 %{_datadir}/icons/hicolor/*/apps/%{appid}.*
 
-
+%changelog
+%autochangelog
