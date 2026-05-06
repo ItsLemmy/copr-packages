@@ -1,0 +1,45 @@
+name: fluxer-canary update check
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest upstream version
+        id: upstream
+        run: |
+          metadata=$(curl -sf https://api.fluxer.app/dl/desktop/canary/linux/x64/latest)
+          version=$(echo "$metadata" | jq -r '.version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Upstream version: $version"
+
+      - name: Get latest COPR build version
+        id: copr
+        run: |
+          build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=fluxer-canary&with_latest_succeeded_build=True")
+          version=$(echo "$build" | jq -r '.latest_succeeded_build.source_package.version // ""' | sed 's/-.*//')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "COPR version: ${version:-none}"
+
+      - name: Trigger COPR build
+        if: steps.upstream.outputs.version != steps.copr.outputs.version
+        run: |
+          echo "New version detected: ${{ steps.upstream.outputs.version }} (COPR has: ${{ steps.copr.outputs.version }})"
+          curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token ${{ secrets.COPR_API_TOKEN }}" \
+            "https://copr.fedorainfracloud.org/api_3/package/build" \
+            -d '{
+              "ownername": "lemmy",
+              "projectname": "favorites",
+              "package_name": "fluxer-canary"
+            }'
+          echo "Build triggered."
+
+      - name: No update needed
+        if: steps.upstream.outputs.version == steps.copr.outputs.version
+        run: echo "Already up to date (${{ steps.copr.outputs.version }})"
