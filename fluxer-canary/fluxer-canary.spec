@@ -3,12 +3,12 @@
 %global __os_install_post %{nil}
 %global _build_id_links none
 
-%global SHA256SUM0 e2d6b6228364e93219bf54364c43d0a4356c8eb96f4849f8cd34224e759c3726
+%global SHA256SUM0 @SHA256SUM0@
 
 %global appdir %{_prefix}/lib/%{name}
 
 Name:           fluxer-canary
-Version:        0.0.122
+Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Instant messaging and VoIP application (canary build)
 
