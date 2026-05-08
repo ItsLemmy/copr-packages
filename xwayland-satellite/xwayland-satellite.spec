@@ -2,18 +2,15 @@
 
 %global forgeurl https://github.com/Supreeeme/xwayland-satellite
 %global branch main
-%global commit %(git ls-remote %{forgeurl} refs/heads/%{branch} | cut -f1)
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date %(date +%%Y%%m%%d)
 
 Name:           xwayland-satellite
-Version:        0.8.1^%{date}git%{shortcommit}
+Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (git snapshot)
 
 License:        MPL-2.0
 URL:            %{forgeurl}
-Source0:        %{forgeurl}/archive/%{commit}.tar.gz#/xwayland-satellite-%{commit}.tar.gz
+Source0:        %{forgeurl}/archive/@COMMIT@.tar.gz#/xwayland-satellite-@COMMIT@.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.85.0
@@ -33,7 +30,7 @@ compositors that prefer not to implement Xwayland support directly, allowing
 legacy X11 applications to function alongside native Wayland programs.
 
 %prep
-%autosetup -n xwayland-satellite-%{commit}
+%autosetup -n xwayland-satellite-@COMMIT@
 
 %build
 export RUSTFLAGS="%{build_rustflags}"

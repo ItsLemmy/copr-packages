@@ -34,17 +34,23 @@ jobs:
         if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
         run: |
           echo "New commit detected: ${{ steps.upstream.outputs.commit }}"
+          shortcommit="${{ steps.upstream.outputs.commit }}"
+          shortcommit="${shortcommit:0:7}"
+          version="0.8.1^${{ steps.upstream.outputs.date }}git${shortcommit}"
+          echo "Version: $version"
           sed -i "s/@COMMIT@/${{ steps.upstream.outputs.commit }}/g" xwayland-satellite/xwayland-satellite.spec
-          sed -i "s/@DATE@/${{ steps.upstream.outputs.date }}/g" xwayland-satellite/xwayland-satellite.spec
+          sed -i "s/@VERSION@/${version}/g" xwayland-satellite/xwayland-satellite.spec
           cat xwayland-satellite/xwayland-satellite.spec
 
       - name: Submit SRPM to COPR
         if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
         run: |
-          sudo dnf install -y rpm-build rpmdevtools
-          rpmdev-setuptree
-          spectool -g -R xwayland-satellite/xwayland-satellite.spec
-          rpmbuild -bs xwayland-satellite/xwayland-satellite.spec
+          sudo apt-get update && sudo apt-get install -y rpm
+          mkdir -p ~/rpmbuild/{SOURCES,SPECS,SRPMS}
+          cp xwayland-satellite/xwayland-satellite.spec ~/rpmbuild/SPECS/
+          curl -Lf -o ~/rpmbuild/SOURCES/xwayland-satellite-${{ steps.upstream.outputs.commit }}.tar.gz \
+            "https://github.com/Supreeeme/xwayland-satellite/archive/${{ steps.upstream.outputs.commit }}.tar.gz"
+          rpmbuild -bs ~/rpmbuild/SPECS/xwayland-satellite.spec --define "_topdir $HOME/rpmbuild"
           srpm=$(find ~/rpmbuild/SRPMS -name '*.src.rpm' | head -1)
           echo "Uploading SRPM: $srpm"
           curl -sf -X POST \
