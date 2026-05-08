@@ -45,6 +45,9 @@ jobs:
       - name: Submit SRPM to COPR
         if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
         run: |
+          sudo pip3 install copr-cli
+          mkdir -p ~/.config
+          echo "${{ secrets.COPR_CONFIG }}" > ~/.config/copr
           sudo apt-get update && sudo apt-get install -y rpm
           mkdir -p ~/rpmbuild/{SOURCES,SPECS,SRPMS}
           cp xwayland-satellite/xwayland-satellite.spec ~/rpmbuild/SPECS/
@@ -53,12 +56,7 @@ jobs:
           rpmbuild -bs ~/rpmbuild/SPECS/xwayland-satellite.spec --define "_topdir $HOME/rpmbuild"
           srpm=$(find ~/rpmbuild/SRPMS -name '*.src.rpm' | head -1)
           echo "Uploading SRPM: $srpm"
-          curl -sf -X POST \
-            -H "Authorization: Token ${{ secrets.COPR_API_TOKEN }}" \
-            -F "ownername=lemmy" \
-            -F "projectname=favorites" \
-            -F "pkgs=@$srpm" \
-            "https://copr.fedorainfracloud.org/api_3/build/upload"
+          copr-cli build favorites "$srpm"
           echo "Build triggered."
 
       - name: No update needed
