@@ -29,15 +29,10 @@ jobs:
         if: steps.upstream.outputs.version != steps.copr.outputs.version
         run: |
           echo "New version detected: ${{ steps.upstream.outputs.version }} (COPR has: ${{ steps.copr.outputs.version }})"
-          curl -sf -X POST \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Token ${{ secrets.COPR_API_TOKEN }}" \
-            "https://copr.fedorainfracloud.org/api_3/package/build" \
-            -d '{
-              "ownername": "lemmy",
-              "projectname": "favorites",
-              "package_name": "fluxer-canary"
-            }'
+          sudo pip3 install copr-cli
+          mkdir -p ~/.config
+          echo "${{ secrets.COPR_CONFIG }}" > ~/.config/copr
+          copr-cli build-package --name fluxer-canary --nowait favorites
           echo "Build triggered."
 
       - name: No update needed
