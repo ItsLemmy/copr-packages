@@ -2,9 +2,9 @@
 
 %global forgeurl https://github.com/Supreeeme/xwayland-satellite
 %global branch main
-%global commit @COMMIT@
+%global commit %(git ls-remote %{forgeurl} refs/heads/%{branch} | cut -f1)
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date @DATE@
+%global date %(date +%%Y%%m%%d)
 
 Name:           xwayland-satellite
 Version:        0.8.1^%{date}git%{shortcommit}
