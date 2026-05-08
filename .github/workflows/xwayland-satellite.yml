@@ -56,7 +56,7 @@ jobs:
           rpmbuild -bs ~/rpmbuild/SPECS/xwayland-satellite.spec --define "_topdir $HOME/rpmbuild"
           srpm=$(find ~/rpmbuild/SRPMS -name '*.src.rpm' | head -1)
           echo "Uploading SRPM: $srpm"
-          copr-cli build favorites "$srpm"
+          copr-cli build --nowait favorites "$srpm"
           echo "Build triggered."
 
       - name: No update needed

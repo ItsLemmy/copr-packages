@@ -60,5 +60,5 @@ sed -i 's|/usr/local/bin/|%{_bindir}/|' %{buildroot}%{_userunitdir}/xwayland-sat
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Thu Jan 01 1970 Automated Build <noreply@copr.fedorainfracloud.org>
+* Wed Jan 01 2025 Automated Build <noreply@copr.fedorainfracloud.org>
 - Automated git snapshot build
