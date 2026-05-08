@@ -1,0 +1,60 @@
+name: xwayland-satellite git snapshot
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get latest upstream commit
+        id: upstream
+        run: |
+          commit=$(curl -sf https://api.github.com/repos/Supreeeme/xwayland-satellite/commits/main | jq -r '.sha')
+          date=$(curl -sf https://api.github.com/repos/Supreeeme/xwayland-satellite/commits/main | jq -r '.commit.committer.date' | cut -dT -f1 | tr -d -)
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "date=$date" >> "$GITHUB_OUTPUT"
+          echo "Upstream: $commit ($date)"
+
+      - name: Get latest COPR build version
+        id: copr
+        run: |
+          build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=xwayland-satellite&with_latest_succeeded_build=True")
+          version=$(echo "$build" | jq -r '.latest_succeeded_build.source_package.version // ""')
+          shortcommit=$(echo "$version" | grep -oP 'git\K[0-9a-f]+' || true)
+          echo "shortcommit=$shortcommit" >> "$GITHUB_OUTPUT"
+          echo "COPR version: ${version:-none} (commit: ${shortcommit:-none})"
+
+      - name: Update spec and trigger COPR build
+        if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
+        run: |
+          echo "New commit detected: ${{ steps.upstream.outputs.commit }}"
+          sed -i "s/@COMMIT@/${{ steps.upstream.outputs.commit }}/g" xwayland-satellite/xwayland-satellite.spec
+          sed -i "s/@DATE@/${{ steps.upstream.outputs.date }}/g" xwayland-satellite/xwayland-satellite.spec
+          cat xwayland-satellite/xwayland-satellite.spec
+
+      - name: Submit SRPM to COPR
+        if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
+        run: |
+          sudo dnf install -y rpm-build rpmdevtools
+          rpmdev-setuptree
+          spectool -g -R xwayland-satellite/xwayland-satellite.spec
+          rpmbuild -bs xwayland-satellite/xwayland-satellite.spec
+          srpm=$(find ~/rpmbuild/SRPMS -name '*.src.rpm' | head -1)
+          echo "Uploading SRPM: $srpm"
+          curl -sf -X POST \
+            -H "Authorization: Token ${{ secrets.COPR_API_TOKEN }}" \
+            -F "ownername=lemmy" \
+            -F "projectname=favorites" \
+            -F "pkgs=@$srpm" \
+            "https://copr.fedorainfracloud.org/api_3/build/upload"
+          echo "Build triggered."
+
+      - name: No update needed
+        if: "startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) && steps.copr.outputs.shortcommit != ''"
+        run: echo "Already up to date (${{ steps.copr.outputs.shortcommit }})"
