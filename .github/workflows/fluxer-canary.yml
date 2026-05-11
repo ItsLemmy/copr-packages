@@ -21,7 +21,7 @@ jobs:
         id: copr
         run: |
           build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=fluxer-canary&with_latest_succeeded_build=True")
-          version=$(echo "$build" | jq -r '.latest_succeeded_build.source_package.version // ""' | sed 's/-.*//')
+          version=$(echo "$build" | jq -r '.builds.latest_succeeded.source_package.version // ""' | sed 's/-.*//')
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "COPR version: ${version:-none}"
 

@@ -25,7 +25,7 @@ jobs:
         id: copr
         run: |
           build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=xwayland-satellite&with_latest_succeeded_build=True")
-          version=$(echo "$build" | jq -r '.latest_succeeded_build.source_package.version // ""')
+          version=$(echo "$build" | jq -r '.builds.latest_succeeded.source_package.version // ""')
           shortcommit=$(echo "$version" | grep -oP 'git\K[0-9a-f]+' || true)
           echo "shortcommit=$shortcommit" >> "$GITHUB_OUTPUT"
           echo "COPR version: ${version:-none} (commit: ${shortcommit:-none})"
