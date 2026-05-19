@@ -2,12 +2,12 @@
 %global         SHA256SUM0 834d7af698b579d357dc0a6511aaa28c5bb9a99293edf03c3a5590973bb6d9e9
 
 Name:           waytator
-Version:        1.2.4
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        Screenshot annotator and lightweight image editor
 
 License:        GPL-3.0-or-later
-URL:            https://github.com/faetalize/waytator
+URL:            https://github.com/ItsLemmy/waytator
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  gcc
