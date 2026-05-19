@@ -14,6 +14,7 @@ BuildRequires:  gcc
 BuildRequires:  meson
 BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
+BuildRequires:  libcap
 BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(gtk4) >= 4.10
 BuildRequires:  pkgconfig(libadwaita-1) >= 1.6
