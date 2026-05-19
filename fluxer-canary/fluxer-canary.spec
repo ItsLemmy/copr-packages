@@ -19,6 +19,7 @@ Source0:        https://api.fluxer.app/dl/desktop/canary/linux/x64/%{version}/ta
 ExclusiveArch:  x86_64
 
 BuildRequires:  desktop-file-utils
+BuildRequires:  libcap
 
 Requires:       gtk3
 Requires:       nss
