@@ -1,5 +1,5 @@
 %global         appid dev.faetalize.waytator
-%global         SHA256SUM0 834d7af698b579d357dc0a6511aaa28c5bb9a99293edf03c3a5590973bb6d9e9
+%global         SHA256SUM0 42e0360ed36142126ace1be66f074acdc1ee5f2618d408874bffdf15b0a2dedd
 
 Name:           waytator
 Version:        1.3.0
