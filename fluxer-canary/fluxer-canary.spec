@@ -6,6 +6,12 @@
 %global SHA256SUM0 @SHA256SUM0@
 
 %global appdir %{_prefix}/lib/%{name}
+# Keep bundled Electron/WebAuthn libraries private so this package does not
+# satisfy system library dependencies in Copr buildroots.
+%global __provides_exclude ^(libEGL|libGLESv2|libffmpeg|libvk_swiftshader|libvulkan)\\.so.*\\(64bit\\)$
+%global __requires_exclude ^(libEGL|libGLESv2|libffmpeg|libvk_swiftshader|libvulkan)\\.so.*\\(64bit\\)$
+%global __provides_exclude_from ^%{appdir}/resources/app\\.asar\\.unpacked/node_modules/@fluxer/webauthn/.*$
+%global __requires_exclude_from ^%{appdir}/resources/app\\.asar\\.unpacked/node_modules/@fluxer/webauthn/.*$
 
 Name:           fluxer-canary
 Version:        @VERSION@
