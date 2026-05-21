@@ -1,8 +1,8 @@
 %global         appid dev.faetalize.waytator
-%global         SHA256SUM0 42e0360ed36142126ace1be66f074acdc1ee5f2618d408874bffdf15b0a2dedd
+%global         SHA256SUM0 ffe12c551ad806c1a5510bcebd709ad4fe37eb31f044cd41d319ff3d3c0473ac
 
 Name:           waytator
-Version:        1.3.0
+Version:        1.3.1
 Release:        1%{?dist}
 Summary:        Screenshot annotator and lightweight image editor
 
