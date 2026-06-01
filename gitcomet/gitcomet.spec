@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           gitcomet
-Version:        0.1.6
+Version:        0.1.15
 Release:        1%{?dist}
 Summary:        A fast Git UI built in Rust with GPUI
 
