@@ -7,25 +7,11 @@ Summary:        A fast Git UI built in Rust with GPUI
 
 License:        AGPL-3.0-only
 URL:            https://github.com/Auto-Explore/GitComet
-Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{url}/releases/download/v%{version}/%{name}-v%{version}-linux-x86_64.tar.gz
 
 ExclusiveArch:  x86_64
 
-BuildRequires:  cargo
-BuildRequires:  rust >= 1.94.0
-BuildRequires:  gcc
-BuildRequires:  clang
-BuildRequires:  cmake
-BuildRequires:  alsa-lib-devel
-BuildRequires:  fontconfig-devel
-BuildRequires:  glib2-devel
-BuildRequires:  libva-devel
-BuildRequires:  wayland-devel
-BuildRequires:  libxcb-devel
-BuildRequires:  libxkbcommon-x11-devel
-BuildRequires:  openssl-devel
-BuildRequires:  libzstd-devel
-BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
 
 Requires:       libwayland-client
@@ -44,13 +30,12 @@ as a drop-in git difftool and git mergetool replacement.
 
 %prep
 %autosetup -n GitComet-%{version}
+tar -xzf %{SOURCE1}
 
 %build
-export RUSTFLAGS="%{build_rustflags}"
-cargo build -p gitcomet --features ui-gpui,gix --release --locked
 
 %install
-install -Dpm 0755 target/release/%{name} -t %{buildroot}%{_bindir}/
+install -Dpm 0755 %{name}-v%{version}-linux-x86_64/%{name} -t %{buildroot}%{_bindir}/
 
 # Desktop file
 install -Dpm644 assets/linux/gitcomet.desktop %{buildroot}%{_datadir}/applications/gitcomet.desktop
