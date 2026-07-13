@@ -14,9 +14,20 @@ jobs:
 
       - name: Get latest upstream commit
         id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          commit=$(curl -sf https://api.github.com/repos/Supreeeme/xwayland-satellite/commits/main | jq -r '.sha')
-          date=$(curl -sf https://api.github.com/repos/Supreeeme/xwayland-satellite/commits/main | jq -r '.commit.committer.date' | cut -dT -f1 | tr -d -)
+          set -euo pipefail
+          json=$(curl -sf \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/Supreeeme/xwayland-satellite/commits/main)
+          commit=$(echo "$json" | jq -r '.sha')
+          date=$(echo "$json" | jq -r '.commit.committer.date' | cut -dT -f1 | tr -d -)
+          if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Could not resolve upstream commit (got '$commit')"
+            exit 1
+          fi
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
           echo "date=$date" >> "$GITHUB_OUTPUT"
           echo "Upstream: $commit ($date)"
