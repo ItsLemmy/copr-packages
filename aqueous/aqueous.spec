@@ -1,13 +1,17 @@
 %global debug_package %{nil}
 
+%global commit      c5210b2b1d3f2b7398739ee4dc563a92c9952e9f
+%global shortcommit c5210b2
+%global commitdate  20260721
+
 Name:           aqueous
-Version:        0.4.1
+Version:        0.4.1^%{commitdate}git%{shortcommit}
 Release:        1%{?dist}
-Summary:        Single-process Wayland compositor
+Summary:        Single-process Wayland compositor (git snapshot)
 
 License:        GPL-3.0-only AND MIT AND 0BSD AND CC-BY-SA-4.0
 URL:            https://github.com/Seafoam-Labs/Aqueous
-Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{commit}.tar.gz#/%{name}-%{commit}.tar.gz
 
 # Zig package dependencies are listed as sources and unpacked locally so COPR
 # builds never need network access. The versions and commit match build.zig.zon.
@@ -63,7 +67,7 @@ legacy external policy protocol. It also installs a complete UWSM and Noctalia
 desktop session with portal routing and sensible defaults.
 
 %prep
-%autosetup -n Aqueous-%{version} -N
+%autosetup -n Aqueous-%{commit} -N
 
 mkdir -p compositor/deps/{pixman,wayland,wlroots,xkbcommon,translate-c}
 tar -xzf %{SOURCE1} --strip-components=1 -C compositor/deps/pixman
