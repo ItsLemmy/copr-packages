@@ -15,20 +15,20 @@ jobs:
     container: fedora:latest
 
     steps:
+      - name: Install build tooling
+        run: dnf install -y copr-cli curl git jq rpm-build rpmdevtools
+
       - name: Checkout packaging
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: packaging
 
       - name: Checkout Aqueous
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Seafoam-Labs/Aqueous
           path: upstream
           fetch-depth: 0
-
-      - name: Install build tooling
-        run: dnf install -y copr-cli curl git jq rpm-build rpmdevtools
 
       - name: Get upstream snapshot metadata
         id: upstream
