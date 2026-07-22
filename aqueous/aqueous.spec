@@ -1,11 +1,13 @@
 %global debug_package %{nil}
 
+%global baseversion 0.4.1
 %global commit      c5210b2b1d3f2b7398739ee4dc563a92c9952e9f
 %global shortcommit c5210b2
 %global commitdate  20260721
+%global commitcount 9
 
 Name:           aqueous
-Version:        0.4.1^%{commitdate}git%{shortcommit}
+Version:        %{baseversion}^%{commitdate}.%{commitcount}.git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Single-process Wayland compositor (git snapshot)
 

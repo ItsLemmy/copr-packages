@@ -1,0 +1,133 @@
+name: aqueous git snapshot
+
+on:
+  schedule:
+    - cron: "30 */6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: aqueous-git-snapshot
+  cancel-in-progress: false
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+
+    steps:
+      - name: Checkout packaging
+        uses: actions/checkout@v4
+        with:
+          path: packaging
+
+      - name: Checkout Aqueous
+        uses: actions/checkout@v4
+        with:
+          repository: Seafoam-Labs/Aqueous
+          path: upstream
+          fetch-depth: 0
+
+      - name: Install build tooling
+        run: dnf install -y copr-cli curl git jq rpm-build rpmdevtools
+
+      - name: Get upstream snapshot metadata
+        id: upstream
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          commit=$(git rev-parse HEAD)
+          shortcommit=$(git rev-parse --short=7 HEAD)
+          commitdate=$(git show -s --format=%cs HEAD | tr -d -)
+          tag=$(git describe --tags --abbrev=0 HEAD)
+          baseversion=${tag#v}
+          commitcount=$(git rev-list --count "${tag}..HEAD")
+          version="${baseversion}^${commitdate}.${commitcount}.git${shortcommit}"
+
+          if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Could not resolve upstream commit (got '$commit')"
+            exit 1
+          fi
+
+          {
+            echo "commit=$commit"
+            echo "shortcommit=$shortcommit"
+            echo "commitdate=$commitdate"
+            echo "commitcount=$commitcount"
+            echo "baseversion=$baseversion"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Upstream: $commit ($version)"
+
+      - name: Check latest COPR build
+        id: copr
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          metadata=$(curl -fsSL \
+            "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=aqueous&with_latest_succeeded_build=True")
+          version=$(jq -r '.builds.latest_succeeded.source_package.version // ""' <<< "$metadata")
+          shortcommit=$(grep -oP 'git\K[0-9a-f]+' <<< "$version" || true)
+
+          if [[ -n "$shortcommit" && "${{ steps.upstream.outputs.commit }}" == "$shortcommit"* ]]; then
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "COPR version: ${version:-none} (commit: ${shortcommit:-none})"
+
+      - name: Prepare snapshot spec
+        if: steps.copr.outputs.build == 'true'
+        working-directory: packaging
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          spec=aqueous/aqueous.spec
+          sed -Ei \
+            -e "s|^%global[[:space:]]+baseversion[[:space:]]+.*|%global baseversion ${{ steps.upstream.outputs.baseversion }}|" \
+            -e "s|^%global[[:space:]]+commit[[:space:]]+.*|%global commit ${{ steps.upstream.outputs.commit }}|" \
+            -e "s|^%global[[:space:]]+shortcommit[[:space:]]+.*|%global shortcommit ${{ steps.upstream.outputs.shortcommit }}|" \
+            -e "s|^%global[[:space:]]+commitdate[[:space:]]+.*|%global commitdate ${{ steps.upstream.outputs.commitdate }}|" \
+            -e "s|^%global[[:space:]]+commitcount[[:space:]]+.*|%global commitcount ${{ steps.upstream.outputs.commitcount }}|" \
+            "$spec"
+
+          built_version=$(rpmspec -q --qf '%{version}\n' "$spec")
+          test "$built_version" = "${{ steps.upstream.outputs.version }}"
+          echo "Building aqueous-$built_version"
+
+      - name: Build and submit SRPM
+        if: steps.copr.outputs.build == 'true'
+        working-directory: packaging
+        shell: bash
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          set -euo pipefail
+
+          topdir=$RUNNER_TEMP/rpmbuild
+          install -d "$topdir"/{SOURCES,SPECS,SRPMS}
+          install -m0644 aqueous/aqueous.spec "$topdir/SPECS/aqueous.spec"
+          install -m0644 aqueous/aqueous-offline-deps.patch "$topdir/SOURCES/aqueous-offline-deps.patch"
+
+          spectool -g -S -C "$topdir/SOURCES" "$topdir/SPECS/aqueous.spec"
+          rpmbuild -bs \
+            --define "_topdir $topdir" \
+            "$topdir/SPECS/aqueous.spec"
+
+          install -dm0700 "$HOME/.config"
+          printf '%s\n' "$COPR_CONFIG" > "$HOME/.config/copr"
+          chmod 0600 "$HOME/.config/copr"
+
+          srpm=$(find "$topdir/SRPMS" -name '*.src.rpm' -print -quit)
+          test -n "$srpm"
+          copr-cli build --nowait lemmy/favorites "$srpm"
+          echo "Submitted $srpm"
+
+      - name: No update needed
+        if: steps.copr.outputs.build == 'false'
+        run: echo "COPR already contains ${{ steps.upstream.outputs.shortcommit }}"
