@@ -32,3 +32,15 @@ index d93fc66..d7ba4c2 100644
          },
      },
      .fingerprint = 0x95d60fed49d96888,
+diff --git a/compositor/deps/translate-c/build.zig.zon b/compositor/deps/translate-c/build.zig.zon
+index 27c4cc1..6997052 100644
+--- a/compositor/deps/translate-c/build.zig.zon
++++ b/compositor/deps/translate-c/build.zig.zon
+@@ -10,6 +10,5 @@
+     .dependencies = .{
+         .aro = .{
+-            .url = "git+https://github.com/Vexu/arocc#5f5a050569a95ecc40a426f0c3666ae7ef987ede",
+-            .hash = "aro-0.0.0-JSD1Qi7QNgDnfcrdEJf82v3o6MhZySjYVrtdfEf3E4Se",
++            .path = "../arocc",
+         },
+     },
