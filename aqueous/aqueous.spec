@@ -24,7 +24,7 @@ Source4:        https://codeberg.org/ifreund/zig-xkbcommon/archive/v0.4.0.tar.gz
 Source5:        https://codeberg.org/ziglang/translate-c/archive/57c559cf581b1fcad90494eda219f98abeb155ce.tar.gz#/translate-c-57c559cf581b1fcad90494eda219f98abeb155ce.tar.gz
 # Aqueous applies its in-tree Vulkan render-hook patches to this archive.
 # compositor/scripts/build-wlroots-render-hook.sh verifies its SHA-256 digest.
-Source6:        https://gitlab.freedesktop.org/wlroots/wlroots/-/releases/0.20.2/downloads/wlroots-0.20.2.tar.gz
+Source6:        https://src.fedoraproject.org/repo/pkgs/rpms/wlroots/wlroots-0.20.2.tar.gz/sha512/634345e23d0b6c28cb501c0dd0ef9c50d529a92ae5c8455e99e876f3f37ee244ac19dd097f76416b2ae4fd7c3f02e39a92a9322cf5a0caf8da21c31cd900e508/wlroots-0.20.2.tar.gz
 # translate-c dependency pinned by its build.zig.zon.
 Source7:        https://github.com/Vexu/arocc/archive/5f5a050569a95ecc40a426f0c3666ae7ef987ede.tar.gz#/arocc-5f5a050569a95ecc40a426f0c3666ae7ef987ede.tar.gz
 Patch0:         aqueous-offline-deps.patch
