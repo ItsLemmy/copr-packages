@@ -113,6 +113,8 @@ jobs:
           install -d "$topdir"/{SOURCES,SPECS,SRPMS}
           install -m0644 aqueous/aqueous.spec "$topdir/SPECS/aqueous.spec"
           install -m0644 aqueous/aqueous-offline-deps.patch "$topdir/SOURCES/aqueous-offline-deps.patch"
+          install -m0644 aqueous/aqueous-wlroots-release-tarball.patch \
+            "$topdir/SOURCES/aqueous-wlroots-release-tarball.patch"
 
           spectool -g -S -C "$topdir/SOURCES" "$topdir/SPECS/aqueous.spec"
           rpmbuild -bs \
