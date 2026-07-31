@@ -38,6 +38,7 @@ BuildRequires:  coreutils
 BuildRequires:  curl
 BuildRequires:  gcc
 BuildRequires:  glslang
+BuildRequires:  jq
 BuildRequires:  lld
 BuildRequires:  llvm
 BuildRequires:  meson
@@ -46,6 +47,7 @@ BuildRequires:  patch
 BuildRequires:  patchelf
 BuildRequires:  pkgconfig
 BuildRequires:  scdoc
+BuildRequires:  ripgrep
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  tar
 BuildRequires:  vulkan-headers
@@ -86,7 +88,6 @@ BuildRequires:  pkgconfig(xwayland)
 Requires:       grim
 Requires:       libdecor
 Requires:       libnotify
-Requires:       noctalia
 Requires:       slurp
 Requires:       uwsm
 Requires:       wl-clipboard
@@ -98,15 +99,14 @@ Suggests:       firefox
 Suggests:       ghostty
 Suggests:       greetd
 Suggests:       nemo
-Suggests:       noctalia-greeter
 Conflicts:      aqueous-bin
 Conflicts:      aqueous-git
 
 %description
 Aqueous is a single-process Wayland compositor with integrated window
 management. This build enables Xwayland, Vulkan effects, animations, and the
-legacy external policy protocol. It also installs a complete UWSM and Noctalia
-desktop session with portal routing and sensible defaults.
+legacy external policy protocol. It also installs a complete UWSM desktop
+session with portal routing and sensible defaults.
 
 %prep
 %autosetup -n Aqueous-%{commit} -N
@@ -202,19 +202,12 @@ install -Dpm0644 wm.toml %{buildroot}%{_datadir}/aqueous/wm.toml
 
 install -Dpm0644 packaging/aqueous-session.target \
     %{buildroot}%{_userunitdir}/aqueous-session.target
-install -Dpm0644 packaging/noctalia.service \
-    %{buildroot}%{_userunitdir}/noctalia.service
-mkdir -p %{buildroot}%{_userunitdir}/graphical-session.target.wants
-ln -s ../noctalia.service \
-    %{buildroot}%{_userunitdir}/graphical-session.target.wants/noctalia.service
 
 install -Dpm0644 packaging/aqueous.tmpfiles \
     %{buildroot}%{_user_tmpfilesdir}/aqueous.conf
 install -Dpm0644 packaging/udev/70-aqueous-uaccess.rules \
     %{buildroot}%{_udevrulesdir}/70-aqueous-uaccess.rules
 
-install -Dpm0644 packaging/noctalia/config.toml \
-    %{buildroot}%{_datadir}/aqueous/noctalia/config.toml
 install -d %{buildroot}%{_datadir}/aqueous/wallpapers
 install -pm0644 packaging/wallpapers/*.avif \
     %{buildroot}%{_datadir}/aqueous/wallpapers/
@@ -232,13 +225,13 @@ install -pm0644 compositor/deps/arocc/LICENSE* \
     %{buildroot}%{_licensedir}/%{name}/arocc/
 
 %post
-%systemd_user_post aqueous-session.target noctalia.service
+%systemd_user_post aqueous-session.target
 
 %preun
-%systemd_user_preun aqueous-session.target noctalia.service
+%systemd_user_preun aqueous-session.target
 
 %postun
-%systemd_user_postun aqueous-session.target noctalia.service
+%systemd_user_postun aqueous-session.target
 
 %files
 %license %{_licensedir}/%{name}/arocc/LICENSE*
@@ -261,8 +254,6 @@ install -pm0644 compositor/deps/arocc/LICENSE* \
 %{_sysconfdir}/uwsm/env-aqueous
 %config(noreplace) %{_sysconfdir}/xdg/aqueous/wm.toml
 %{_userunitdir}/aqueous-session.target
-%{_userunitdir}/noctalia.service
-%{_userunitdir}/graphical-session.target.wants/noctalia.service
 %{_user_tmpfilesdir}/aqueous.conf
 %{_udevrulesdir}/70-aqueous-uaccess.rules
 
