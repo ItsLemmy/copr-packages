@@ -1,0 +1,84 @@
+name: umbriel git snapshot
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get latest upstream commit
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          json=$(curl -sf \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/noctalia-dev/umbriel/commits/main)
+          commit=$(echo "$json" | jq -r '.sha')
+          date=$(echo "$json" | jq -r '.commit.committer.date' | cut -dT -f1 | tr -d -)
+          base_version=$(curl -sfL "https://raw.githubusercontent.com/noctalia-dev/umbriel/${commit}/meson.build" \
+            | sed -n "s/^[[:space:]]*version: '\([^']*\)'.*/\1/p")
+          if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Could not resolve upstream commit (got '$commit')"
+            exit 1
+          fi
+          if [[ ! "$date" =~ ^[0-9]{8}$ || ! "$base_version" =~ ^[0-9][0-9A-Za-z.+~_-]*$ ]]; then
+            echo "::error::Could not resolve upstream version metadata"
+            exit 1
+          fi
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "date=$date" >> "$GITHUB_OUTPUT"
+          echo "base_version=$base_version" >> "$GITHUB_OUTPUT"
+          echo "Upstream: $commit ($base_version, $date)"
+
+      - name: Get latest COPR build version
+        id: copr
+        run: |
+          build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=umbriel-git&with_latest_succeeded_build=True")
+          version=$(echo "$build" | jq -r '.builds.latest_succeeded.source_package.version // ""')
+          shortcommit=$(echo "$version" | grep -oP 'git\K[0-9a-f]+' || true)
+          echo "shortcommit=$shortcommit" >> "$GITHUB_OUTPUT"
+          echo "COPR version: ${version:-none} (commit: ${shortcommit:-none})"
+
+      - name: Render spec for the upstream commit
+        if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
+        run: |
+          set -euo pipefail
+          shortcommit="${{ steps.upstream.outputs.commit }}"
+          shortcommit="${shortcommit:0:7}"
+          version="${{ steps.upstream.outputs.base_version }}^${{ steps.upstream.outputs.date }}git${shortcommit}"
+          sed -i \
+            -e "s/@COMMIT@/${{ steps.upstream.outputs.commit }}/g" \
+            -e "s/@VERSION@/${version}/g" \
+            umbriel-git/umbriel-git.spec
+          echo "version=$version" >> "$GITHUB_ENV"
+
+      - name: Submit SRPM to COPR
+        if: "!startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) || steps.copr.outputs.shortcommit == ''"
+        run: |
+          set -euo pipefail
+          sudo pip3 install copr-cli
+          mkdir -p ~/.config
+          echo "${{ secrets.COPR_CONFIG }}" > ~/.config/copr
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          mkdir -p ~/rpmbuild/{SOURCES,SPECS,SRPMS}
+          cp umbriel-git/umbriel-git.spec ~/rpmbuild/SPECS/
+          curl -Lf -o ~/rpmbuild/SOURCES/umbriel-${{ steps.upstream.outputs.commit }}.tar.gz \
+            "https://github.com/noctalia-dev/umbriel/archive/${{ steps.upstream.outputs.commit }}.tar.gz"
+          rpmbuild -bs ~/rpmbuild/SPECS/umbriel-git.spec --define "_topdir $HOME/rpmbuild"
+          srpm="$HOME/rpmbuild/SRPMS/umbriel-git-${version}-1.src.rpm"
+          test -f "$srpm"
+          copr-cli build --nowait favorites "$srpm"
+
+      - name: No update needed
+        if: "startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) && steps.copr.outputs.shortcommit != ''"
+        run: echo "Already up to date (${{ steps.copr.outputs.shortcommit }})"
