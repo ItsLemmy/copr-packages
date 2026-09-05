@@ -1,16 +1,13 @@
 Name:           cava
-Version:        0.10.7
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Cross-platform Audio Visualizer
 
 License:        MIT
 URL:            https://github.com/karlstav/cava
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
-# Patch to disable AX_CHECK_GL which is broken in Fedora 43 autoconf-archive
-Patch0:         cava-disable-gl-check.patch
 
 BuildRequires:  autoconf
-BuildRequires:  autoconf-archive
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  make
