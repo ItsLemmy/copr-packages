@@ -57,6 +57,7 @@ This package installs Zsh completion files for %{name}
 %prep
 %autosetup -n %{crate}-%{version} -p1
 cargo vendor
+find vendor -type f -name '*.rs' -perm /111 -exec chmod a-x {} +
 %cargo_prep -v vendor
 
 %build
