@@ -4,7 +4,7 @@
 %global crate dotter
 
 Name:           dotter
-Version:        0.13.4
+Version:        0.13.5
 Release:        1%{?dist}
 Summary:        A dotfile manager and templater written in Rust
 
