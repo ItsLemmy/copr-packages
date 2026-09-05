@@ -1,8 +1,8 @@
-%global 	SHA256SUM0 824c7918636f2ba97b68f004cea3bf1da876dab6b39a80c049fc66e51621b660
+%global 	SHA256SUM0 55871a36c18dc783ad3273d281be897e24db55268747104ee21697a871d0cebd
 %define         appid com.vysp3r.ProtonPlus
 
 Name:           protonplus
-Version:        0.5.20
+Version:        0.6.6
 Release:        1%{?dist}
 Summary:        Simple and powerful manager for Wine, Proton, DXVK and VKD3D
 
@@ -20,12 +20,17 @@ BuildRequires:  libappstream-glib
 BuildRequires:  meson >= 1.0.0
 BuildRequires:  ninja-build
 BuildRequires:  vala
+BuildRequires:  pkgconfig(appstream)
+BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(gee-0.8)
+BuildRequires:  pkgconfig(gio-unix-2.0)
 BuildRequires:  pkgconfig(gtk4)
 BuildRequires:  pkgconfig(json-glib-1.0)
-BuildRequires:  pkgconfig(libadwaita-1) >= 1.5.0
+BuildRequires:  pkgconfig(libadwaita-1) >= 1.6.0
 BuildRequires:  pkgconfig(libarchive)
+BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libsoup-3.0)
+BuildRequires:  pkgconfig(sdl3)
 
 # Need for TLS support
 Requires:       glib-networking
