@@ -24,8 +24,7 @@ jobs:
             https://api.github.com/repos/noctalia-dev/umbriel/commits/main)
           commit=$(echo "$json" | jq -r '.sha')
           date=$(echo "$json" | jq -r '.commit.committer.date' | cut -dT -f1 | tr -d -)
-          base_version=$(curl -sfL "https://raw.githubusercontent.com/noctalia-dev/umbriel/${commit}/meson.build" \
-            | sed -n "s/^[[:space:]]*version: '\([^']*\)'.*/\1/p")
+          base_version=$(curl -sfL "https://raw.githubusercontent.com/noctalia-dev/umbriel/${commit}/VERSION")
           if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
             echo "::error::Could not resolve upstream commit (got '$commit')"
             exit 1
