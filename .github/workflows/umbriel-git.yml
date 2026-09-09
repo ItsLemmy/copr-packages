@@ -53,7 +53,7 @@ jobs:
           set -euo pipefail
           shortcommit="${{ steps.upstream.outputs.commit }}"
           shortcommit="${shortcommit:0:7}"
-          version="${{ steps.upstream.outputs.base_version }}^${{ steps.upstream.outputs.date }}git${shortcommit}"
+          version="${{ steps.upstream.outputs.base_version }}.${{ steps.upstream.outputs.date }}git${shortcommit}"
           sed -i \
             -e "s/@COMMIT@/${{ steps.upstream.outputs.commit }}/g" \
             -e "s/@VERSION@/${version}/g" \
