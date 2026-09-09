@@ -49,14 +49,17 @@ blur, shadows, and fluid animations.
 
 %install
 %meson_install
+install -Dpm0644 umbrielfx/LICENSE %{buildroot}%{_licensedir}/%{name}/umbrielfx-LICENSE
 
 %files
-%license LICENSE umbrielfx/LICENSE
+%license LICENSE
 %doc README.md PACKAGING.md
 %{_bindir}/umbriel
 %{_bindir}/start-umbriel
 %{_datadir}/umbriel/config.toml
+%{_datadir}/umbriel/shaders/*.glsl
 %{_datadir}/wayland-sessions/umbriel.desktop
+%license %{_licensedir}/%{name}/umbrielfx-LICENSE
 %{_userunitdir}/umbriel.service
 %{_userunitdir}/umbriel-session.target
 %{_userunitdir}/umbriel-shutdown.target
