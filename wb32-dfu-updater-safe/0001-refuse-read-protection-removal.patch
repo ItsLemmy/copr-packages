@@ -1,0 +1,144 @@
+From: Lemmy <2170677+ItsLemmy@users.noreply.github.com>
+Subject: [PATCH] Refuse read-protection removal
+
+Disabling WB32 read protection erases the target and is never necessary for
+normal DFU flashing. Fail explicitly and remove the option that requested this
+destructive operation.
+
+diff --git a/src_common/cmdinfo.c b/src_common/cmdinfo.c
+index 2dd4f62..d49f29c 100644
+--- a/src_common/cmdinfo.c
++++ b/src_common/cmdinfo.c
+@@ -32,7 +32,6 @@ void help(void)
+                   "  -U --upload <file>\t\tRead firmware from device into <file>\n"
+                   "  -Z --upload-size <bytes>\tSpecify the expected upload size in bytes\n"
+                   "  -D --download <file>\t\tWrite firmware from <file> into device\n"
+-                  "  -t --toolbox-mode \t\tAutomatically disables read protection\n"
+                   "  -w --wait\t\t\tWait for device to appear\n");
+ }
+ 
+diff --git a/src_common/dfufwdevice.c b/src_common/dfufwdevice.c
+index 3919ace..f63f785 100644
+--- a/src_common/dfufwdevice.c
++++ b/src_common/dfufwdevice.c
+@@ -133,79 +133,10 @@ static void fn_erase(dfu_dev_t *pdfu,
+   }
+ }
+ 
+-extern uint8_t toolbox_mode;
+ void fn_unread_protection(dfu_dev_t *pdfu)
+ {
+-  char ch = 0;
+-  int timeout = UNREAD_PROT_TIMEOUT;
+-  uint8_t page_buf[FLASH_PAGE_SIZE] = {0};
+-
+-  if (toolbox_mode)
+-  {
+-    goto disabled_proc;
+-  }
+-
+-  printf("----------------------------------------\n");
+-  printf("The MCU is in read protection mode, "
+-         "do you want to continue? [Y/n]    ");
+-
+-  while (1)
+-  {
+-    uint8_t itm = timeout + 1;
+-    printf("\b\b");
+-    while (itm /= 10)
+-    {
+-      printf("\b");
+-    }
+-    printf("%d ", timeout);
+-    sleep(1);  /* Sleep(ms) sleep(s) usleep(us) */
+-    if(_kbhit())
+-    {
+-      ch = getch();
+-      switch (ch)
+-      {
+-        case 'y':
+-        case 'Y':
+-        case '\r': /* 13 */
+-        case '\n': /* 10 */
+-          timeout = 0;
+-          break;
+-        default:
+-          printf("\n");
+-          exit(EX_OK);
+-          break;
+-      }
+-    }
+-
+-    if (timeout == 0)
+-    {
+-      printf("\r\n");
+-
+-disabled_proc:
+-
+-      /* Program info4 area. */
+-      *((uint32_t *)(page_buf + 0x10)) = 0x0C0C0C0C;
+-      *((uint8_t *)(page_buf + 0x14)) = ~page_buf[0x10];
+-      *((uint16_t *)(page_buf + 0x18)) = 0x5AA5;
+-      fn_program_page(pdfu, INFO4_ADDR, page_buf, 0, FLASH_PAGE_SIZE);
+-      
+-      /* Program info5 area. */
+-      memset(page_buf, 0, FLASH_PAGE_SIZE);
+-      *((uint32_t *)(page_buf + 0x10)) = 0xFFFFFFFF;
+-      *((uint32_t *)(page_buf + 0x1C)) = 0x00000000;
+-      fn_program_page(pdfu, INFO5_ADDR, page_buf, 0, FLASH_PAGE_SIZE);
+-
+-      /* Program info6 area. */
+-      memset(page_buf, 0, FLASH_PAGE_SIZE);
+-      fn_program_page(pdfu, INFO6_ADDR, page_buf, 0, FLASH_PAGE_SIZE);
+-      printf("Read protection mode is disabled, "
+-             "please power down and enter the DFU mode again.\n");
+-      fn_reset(pdfu, 1000);
+-      exit(EX_OK);
+-    }
+-
+-    timeout--;
+-  }
++  (void)pdfu;
++  errx(EX_IOERR, "Read protection is enabled; refusing to modify the target.");
+ }
+ 
+ int fn_get_info(dfu_dev_t *pdfu, int8_t info_id, uint8_t *info)
+diff --git a/src_common/main.c b/src_common/main.c
+index cdb2979..e5959ef 100644
+--- a/src_common/main.c
++++ b/src_common/main.c
+@@ -36,7 +36,6 @@
+ #include "dfufw.h"
+ 
+ dfu_dev_t *dfu_root = NULL;
+-uint8_t toolbox_mode = 0;
+ 
+ static long parse_dwaddr(char *str, char *nmb)
+ {
+@@ -130,7 +129,6 @@ static struct option options[] = {
+     {"upload", 1, 0, 'U'},
+     {"upload-size", 1, 0, 'Z'},
+     {"download", 1, 0, 'D'},
+-    {"toolbox-mode", 0, 0, 't'},
+     {"wait", 1, 0, 'w'},
+     {0, 0, 0, 0}};
+ 
+@@ -151,7 +149,7 @@ int main(int argc, char *argv[])
+   {
+     int parc, ioption = 0;
+ 
+-    parc = getopt_long(argc, argv, "hVln:s:RU:D:Z:tw", options, &ioption);
++    parc = getopt_long(argc, argv, "hVln:s:RU:D:Z:w", options, &ioption);
+     if (parc == -1)
+       break;
+ 
+@@ -193,9 +191,6 @@ int main(int argc, char *argv[])
+     case 'Z':
+       expected_size = parse_number("upload-size", optarg);
+       break;
+-    case 't':
+-      toolbox_mode = 1;
+-      break;
+     case 'w':
+       wait_device = 1;
+       break;

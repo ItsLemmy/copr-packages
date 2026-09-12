@@ -1,0 +1,2 @@
+# Permit the active local user to access WB32 DFU devices via libusb.
+SUBSYSTEM=="usb", ATTR{idVendor}=="342d", ATTR{idProduct}=="dfa0", TAG+="uaccess"
