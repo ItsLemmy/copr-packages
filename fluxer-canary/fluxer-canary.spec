@@ -43,9 +43,13 @@ canary (development) channel build of the desktop application.
 %prep
 echo "%{SHA256SUM0}  %{SOURCE0}" | sha256sum -c -
 %setup -q -c -n %{name}-%{version}
-mv "Fluxer Canary-%{version}-linux-x64"/* .
-mv "Fluxer Canary-%{version}-linux-x64"/.[!.]* . 2>/dev/null || :
-rmdir "Fluxer Canary-%{version}-linux-x64"
+# Upstream has shipped the payload under both "Fluxer Canary-..." and
+# "Fluxer-Canary-..."; locate the archive's single top-level directory
+# instead of hardcoding its name.
+topdir=$(find . -mindepth 1 -maxdepth 1 -type d -print -quit)
+[ -n "$topdir" ] || { echo "archive has no top-level directory" >&2; exit 1; }
+find "$topdir" -mindepth 1 -maxdepth 1 -exec mv -t . -- {} +
+rmdir "$topdir"
 
 %build
 cat > %{name}.desktop <<'EOF'
