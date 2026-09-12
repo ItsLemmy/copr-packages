@@ -1,6 +1,6 @@
 Name:           wb32-dfu-updater-safe
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Read-protection-safe USB firmware updater for WB32 chips
 
 License:        Apache-2.0
@@ -30,13 +30,13 @@ rule that grants the active local user access to WB32 DFU devices.
 
 %install
 %cmake_install
-install -Dpm 0644 %{SOURCE1} %{buildroot}%{_udevrulesdir}/60-wb32-dfu-updater.rules
+install -Dpm 0644 %{SOURCE1} %{buildroot}/usr/lib/udev/rules.d/60-wb32-dfu-updater.rules
 
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/wb32-dfu-updater_cli
-%{_udevrulesdir}/60-wb32-dfu-updater.rules
+/usr/lib/udev/rules.d/60-wb32-dfu-updater.rules
 
 %changelog
 %autochangelog
