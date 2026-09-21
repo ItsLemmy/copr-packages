@@ -3,7 +3,8 @@
 %global forgeurl https://github.com/Supreeeme/xwayland-satellite
 %global branch main
 
-Name:           xwayland-satellite
+Name:           xwayland-satellite-git
+Epoch:          1
 Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (git snapshot)
@@ -22,6 +23,7 @@ BuildRequires:  pkgconfig(systemd)
 Requires:       xorg-x11-server-Xwayland >= 23.1
 
 Provides:       xwayland-satellite = %{version}-%{release}
+Obsoletes:      xwayland-satellite < %{epoch}:%{version}-%{release}
 
 %description
 xwayland-satellite grants rootless Xwayland integration to any Wayland
