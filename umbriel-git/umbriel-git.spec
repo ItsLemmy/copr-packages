@@ -57,7 +57,7 @@ install -Dpm0644 umbrielfx/LICENSE %{buildroot}%{_licensedir}/%{name}/umbrielfx-
 %{_bindir}/umbriel
 %{_bindir}/start-umbriel
 %{_datadir}/umbriel/config.toml
-%{_datadir}/umbriel/shaders/*.glsl
+%{_datadir}/umbriel/effects/
 %{_datadir}/wayland-sessions/umbriel.desktop
 %license %{_licensedir}/%{name}/umbrielfx-LICENSE
 %{_userunitdir}/umbriel.service
