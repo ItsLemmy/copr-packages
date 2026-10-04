@@ -7,7 +7,7 @@ SPEC_TEMPLATE="fluxer-canary.spec"
 resultdir="${1:-.}"
 
 # Fetch latest release metadata
-metadata=$(curl -sf "$API_URL")
+metadata=$(curl -sfL "$API_URL")
 version=$(echo "$metadata" | jq -r '.version')
 sha256=$(echo "$metadata" | jq -r '.files.tar_gz.sha256')
 tar_url=$(echo "$metadata" | jq -r '.files.tar_gz.url')
