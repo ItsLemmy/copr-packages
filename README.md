@@ -24,3 +24,23 @@ sudo dnf install xdg-desktop-portal-umbriel-git
 The package provides `xdg-desktop-portal-umbriel`, satisfying `umbriel-git`'s
 recommendation. Portal selection and D-Bus/systemd user activation files are
 installed automatically.
+
+## Noctalia Greeter Git
+
+`noctalia-greeter-git/noctalia-greeter-git.spec` packages upstream git
+snapshots of the greetd greeter. The matching GitHub Actions workflow checks
+upstream daily and submits new snapshots to `lemmy/favorites`.
+
+```sh
+sudo dnf install noctalia-greeter-git
+```
+
+Fedora's greetd runs greeters as the `greetd` user, so the shipped tmpfiles
+drop-in creates `/var/lib/noctalia-greeter` owned by `greetd`. Point
+`/etc/greetd/config.toml` at the session wrapper:
+
+```toml
+[default_session]
+command = "/usr/bin/noctalia-greeter-session"
+user = "greetd"
+```
