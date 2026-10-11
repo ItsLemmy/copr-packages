@@ -41,7 +41,8 @@ jobs:
       - name: Get latest COPR build version
         id: copr
         run: |
-          build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=noctalia-greeter-git&with_latest_succeeded_build=True")
+          # 404 until the first build creates the package
+          build=$(curl -sf "https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=noctalia-greeter-git&with_latest_succeeded_build=True" || echo '{}')
           version=$(echo "$build" | jq -r '.builds.latest_succeeded.source_package.version // ""')
           shortcommit=$(echo "$version" | grep -oP 'git\K[0-9a-f]+' || true)
           echo "shortcommit=$shortcommit" >> "$GITHUB_OUTPUT"
