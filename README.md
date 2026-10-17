@@ -1,46 +1,39 @@
 # COPR Packages
 
-A repository for all the RPM .spec files that I maintain on Fedora COPR.
-
-## Fluxer Canary
-
-`fluxer-canary/generate-srpm.sh <resultdir>` downloads the latest canary
-release and generates its RPM spec. The source generator and scheduled
-update check follow redirects from Fluxer's download API to its package
-host; without this, metadata retrieval fails before the RPM build starts.
-
-## XDG Desktop Portal Umbriel Git
-
-`xdg-desktop-portal-umbriel-git/xdg-desktop-portal-umbriel-git.spec` packages
-upstream git snapshots, including the GTK4 share picker. The matching GitHub
-Actions workflow checks upstream daily and submits new snapshots to the existing
-`lemmy/favorites` COPR project using the `COPR_CONFIG` secret.
+RPM specs for [lemmy/favorites](https://copr.fedorainfracloud.org/coprs/lemmy/favorites/).
 
 ```sh
 sudo dnf copr enable lemmy/favorites
-sudo dnf install xdg-desktop-portal-umbriel-git
+sudo dnf install <package>
 ```
 
-The package provides `xdg-desktop-portal-umbriel`, satisfying `umbriel-git`'s
-recommendation. Portal selection and D-Bus/systemd user activation files are
-installed automatically.
+## Umbriel
 
-## Noctalia Greeter Git
+```sh
+sudo dnf install umbriel-git xdg-desktop-portal-umbriel-git
+```
 
-`noctalia-greeter-git/noctalia-greeter-git.spec` packages upstream git
-snapshots of the greetd greeter. The matching GitHub Actions workflow checks
-upstream daily and submits new snapshots to `lemmy/favorites`.
+Log out and back in to use an updated compositor. Upgrades no longer restart
+Umbriel, but upgrading from an older build can still end the session: run that
+upgrade from a TTY after logging out.
+
+## Noctalia Greeter
 
 ```sh
 sudo dnf install noctalia-greeter-git
 ```
 
-Fedora's greetd runs greeters as the `greetd` user, so the shipped tmpfiles
-drop-in creates `/var/lib/noctalia-greeter` owned by `greetd`. Point
-`/etc/greetd/config.toml` at the session wrapper:
+Set the session wrapper in `/etc/greetd/config.toml`:
 
 ```toml
 [default_session]
 command = "/usr/bin/noctalia-greeter-session"
 user = "greetd"
 ```
+
+The package creates `/var/lib/noctalia-greeter` for the `greetd` user.
+
+## Building Fluxer Canary
+
+`fluxer-canary/generate-srpm.sh <resultdir>` generates the spec from the latest
+canary release.
