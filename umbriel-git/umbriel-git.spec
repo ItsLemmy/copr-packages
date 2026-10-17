@@ -71,7 +71,7 @@ install -Dpm0644 umbrielfx/LICENSE %{buildroot}%{_licensedir}/%{name}/umbrielfx-
 %systemd_user_preun umbriel.service
 
 %postun
-%systemd_user_postun_with_restart umbriel.service
+%systemd_user_postun umbriel.service
 
 %changelog
 %autochangelog
