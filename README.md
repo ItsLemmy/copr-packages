@@ -48,3 +48,14 @@ Repackages the upstream prebuilt release binary. A GitHub Actions workflow
 checks for new releases every 6 hours, bumps `strata/strata.spec`, and
 triggers the COPR build. It does not set Strata as the default file manager or
 system file chooser; see `strata --help` for those options.
+
+### strata-git
+
+```sh
+sudo dnf swap strata strata-git
+```
+
+Builds the latest upstream `main` from source. A GitHub Actions workflow checks
+daily and submits a COPR build when `main` has a new commit. It conflicts with
+`strata` and marks itself as dnf-managed so the in-app updater does not replace
+the binary with a stable release.
