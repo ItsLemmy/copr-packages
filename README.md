@@ -37,3 +37,14 @@ The package creates `/var/lib/noctalia-greeter` for the `greetd` user.
 
 `fluxer-canary/generate-srpm.sh <resultdir>` generates the spec from the latest
 canary release.
+
+## Strata
+
+```sh
+sudo dnf install strata
+```
+
+Repackages the upstream prebuilt release binary. A GitHub Actions workflow
+checks for new releases every 6 hours, bumps `strata/strata.spec`, and
+triggers the COPR build. It does not set Strata as the default file manager or
+system file chooser; see `strata --help` for those options.
