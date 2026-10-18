@@ -7,18 +7,20 @@ sudo dnf copr enable lemmy/favorites
 sudo dnf install <package>
 ```
 
-## Lazygit
+## Stable release updates
 
-The `lazygit update check` GitHub Actions workflow checks for new stable upstream
-releases every 6 hours and can also be run manually. It updates
-`lazygit/lazygit.spec`, resets the RPM release to `1`, commits the change, and
-triggers a build in `lemmy/favorites` when the latest successful COPR build is
-behind upstream.
+GitHub Actions workflows for `cava`, `dotter`, `gitcomet`, `lazygit`,
+`limine-snapper-sync`, and `protonplus` check for stable upstream releases every
+6 hours and can also be run manually. They update each package's spec, reset
+the RPM release to `1`, commit the change, and trigger a build in
+`lemmy/favorites` when its latest successful version differs from upstream.
 
-It uses the existing `COPR_CONFIG` repository secret. The COPR `lazygit` package
-must build from this repository's default branch with
-`lazygit/lazygit.spec` as its spec file. GitHub Actions must be allowed to push
-to that branch.
+limine-snapper-sync releases are fetched from GitLab; the others use GitHub.
+ProtonPlus updates also refresh the source archive SHA256 checked by its spec.
+
+These workflows use the existing `COPR_CONFIG` repository secret. Each COPR
+package must build from this repository's default branch using its spec.
+GitHub Actions must be allowed to push to that branch.
 
 ## Umbriel
 
