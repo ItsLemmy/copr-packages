@@ -7,6 +7,19 @@ sudo dnf copr enable lemmy/favorites
 sudo dnf install <package>
 ```
 
+## Lazygit
+
+The `lazygit update check` GitHub Actions workflow checks for new stable upstream
+releases every 6 hours and can also be run manually. It updates
+`lazygit/lazygit.spec`, resets the RPM release to `1`, commits the change, and
+triggers a build in `lemmy/favorites` when the latest successful COPR build is
+behind upstream.
+
+It uses the existing `COPR_CONFIG` repository secret. The COPR `lazygit` package
+must build from this repository's default branch with
+`lazygit/lazygit.spec` as its spec file. GitHub Actions must be allowed to push
+to that branch.
+
 ## Umbriel
 
 ```sh
