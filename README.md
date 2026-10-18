@@ -44,18 +44,11 @@ canary release.
 sudo dnf install strata
 ```
 
-Repackages the upstream prebuilt release binary. A GitHub Actions workflow
-checks for new releases every 6 hours, bumps `strata/strata.spec`, and
-triggers the COPR build. It does not set Strata as the default file manager or
-system file chooser; see `strata --help` for those options.
+Repackages upstream prebuilt binaries, including alpha, beta, RC, and nightly
+prereleases. A GitHub Actions workflow checks every 6 hours for the most recently
+published release, verifies its archive checksum when updating, bumps
+`strata/strata.spec`, and triggers the COPR build. RPM prerelease versions use `~`
+so the final stable release sorts newer than its prereleases.
 
-### strata-git
-
-```sh
-sudo dnf swap strata strata-git
-```
-
-Builds the latest upstream `main` from source. A GitHub Actions workflow checks
-daily and submits a COPR build when `main` has a new commit. It conflicts with
-`strata` and marks itself as dnf-managed so the in-app updater does not replace
-the binary with a stable release.
+It does not set Strata as the default file manager or system file chooser;
+see `strata --help` for those options.

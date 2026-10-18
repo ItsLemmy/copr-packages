@@ -1,16 +1,17 @@
 %global debug_package %{nil}
 %global __strip /bin/true
 %global triple x86_64-unknown-linux-gnu
+%global upstream_version 1.1.0-rc.1
 
 Name:           strata
-Version:        1.0.0
+Version:        1.1.0~rc.1
 Release:        1%{?dist}
 Summary:        Fast, keyboard-first GTK4 file manager with Miller columns
 
 # Strata itself is MIT; the bundled UnRAR code carries the UnRAR license
 License:        MIT AND LicenseRef-UnRAR
 URL:            https://github.com/lgse/strata
-Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}-%{triple}.tar.gz
+Source0:        %{url}/releases/download/v%{upstream_version}/%{name}-%{upstream_version}-%{triple}.tar.gz
 
 ExclusiveArch:  x86_64
 
@@ -39,7 +40,7 @@ This package installs the upstream prebuilt release binary. It does not
 register Strata as the default file manager or system file chooser.
 
 %prep
-%setup -q -n %{name}-%{version}-%{triple}
+%setup -q -n %{name}-%{upstream_version}-%{triple}
 
 %build
 

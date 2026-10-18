@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Get latest upstream release
+      - name: Get newest published upstream release (including prereleases)
         id: upstream
         env:
           GH_TOKEN: ${{ github.token }}
@@ -24,12 +24,15 @@ jobs:
           tag=$(curl -sf \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/lgse/strata/releases/latest | jq -r '.tag_name')
-          version="${tag#v}"
-          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            'https://api.github.com/repos/lgse/strata/releases?per_page=100' \
+            | jq -r '[.[] | select(.draft == false)] | sort_by(.published_at) | last | .tag_name')
+          upstream_version="${tag#v}"
+          if [[ ! "$upstream_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc|nightly)\.[0-9]+(\.[0-9]+)*)?$ ]]; then
             echo "::error::Unexpected upstream release tag '$tag'"
             exit 1
           fi
+          version="${upstream_version/-/\~}"
+          echo "upstream_version=$upstream_version" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Upstream version: $version"
 
@@ -49,7 +52,7 @@ jobs:
           if [[ "$status" == 404 ]]; then
             version=""
           elif [[ "$status" =~ ^2 ]]; then
-            version=$(jq -r '.builds.latest_succeeded.source_package.version // ""' "$response" | sed 's/-.*//')
+            version=$(jq -r '.builds.latest_succeeded.source_package.version // ""' "$response" | sed 's/-[^-]*$//')
           else
             cat "$response" >&2
             echo "::error::Could not retrieve the latest COPR build (HTTP $status)"
@@ -62,7 +65,7 @@ jobs:
         if: steps.upstream.outputs.version != steps.spec.outputs.version
         run: |
           set -euo pipefail
-          v="${{ steps.upstream.outputs.version }}"
+          v="${{ steps.upstream.outputs.upstream_version }}"
           f="strata-${v}-x86_64-unknown-linux-gnu.tar.gz"
           base="https://github.com/lgse/strata/releases/download/v${v}"
           curl -fL -O "$base/$f"
@@ -74,7 +77,10 @@ jobs:
         if: steps.upstream.outputs.version != steps.spec.outputs.version
         run: |
           set -euo pipefail
-          sed -i "s/^Version:.*/Version:        ${{ steps.upstream.outputs.version }}/" strata/strata.spec
+          sed -i \
+            -e "s/^Version:.*/Version:        ${{ steps.upstream.outputs.version }}/" \
+            -e "s/^%global upstream_version .*/%global upstream_version ${{ steps.upstream.outputs.upstream_version }}/" \
+            strata/strata.spec
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -am "strata ${{ steps.upstream.outputs.version }}"
