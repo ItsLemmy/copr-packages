@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           gitcomet
-Version:        0.3.0
-Release:        1%{?dist}
+Version:    0.3.1
+Release:    1%{?dist}
 Summary:        A fast Git UI built in Rust with GPUI
 
 License:        AGPL-3.0-only
