@@ -32,7 +32,6 @@ BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  systemd-rpm-macros
 
-Requires:       xwayland-satellite
 Recommends:     xdg-desktop-portal-umbriel
 
 %description
