@@ -20,7 +20,7 @@ BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(jemalloc)
 BuildRequires:  pkgconfig(lcms2)
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
-BuildRequires:  pkgconfig(libinput) >= 1.23
+BuildRequires:  pkgconfig(libinput) >= 1.27
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
