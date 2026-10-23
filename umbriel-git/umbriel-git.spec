@@ -35,9 +35,7 @@ BuildRequires:  systemd-rpm-macros
 Recommends:     xdg-desktop-portal-umbriel
 
 %description
-Umbriel is a Wayland compositor designed for daily use. It supports scrolling,
-dwindle, and master layouts, independent output workspaces, window rules,
-blur, shadows, and fluid animations.
+Umbriel is a Wayland compositor designed for daily use, with scrolling, dwindle, master, and floating layouts, per-output workspaces, window rules, blur, shadows, and fluid animations.
 
 %prep
 %autosetup -n umbriel-@COMMIT@
