@@ -10,7 +10,7 @@ sudo dnf install <package>
 ## Stable release updates
 
 GitHub Actions workflows for `cava`, `dotter`, `gitcomet`, `lazygit`,
-`limine-snapper-sync`, and `protonplus` check for stable upstream releases every
+`limine-snapper-sync`, `protonplus`, and `tuios` check for stable upstream releases every
 6 hours and can also be run manually. They update each package's spec, reset
 the RPM release to `1`, commit the change, and trigger a build in
 `lemmy/favorites` when its latest successful version differs from upstream.
@@ -67,3 +67,12 @@ so the final stable release sorts newer than its prereleases.
 
 It does not set Strata as the default file manager or system file chooser;
 see `strata --help` for those options.
+
+## TUIOS
+
+```sh
+sudo dnf install tuios
+```
+
+Builds the stable upstream release from source with the default pure-Go terminal
+backend. Requires a true-color terminal; run `tuios` to start a session.
