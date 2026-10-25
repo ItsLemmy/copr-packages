@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:       tuios
-Version:    0.10.1
+Version:    0.11.0
 Release:    1%{?dist}
 Summary:    Terminal multiplexer and window manager with a modal interface
 
