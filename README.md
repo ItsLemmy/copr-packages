@@ -10,13 +10,13 @@ sudo dnf install <package>
 ## Stable release updates
 
 GitHub Actions workflows for `cava`, `dotter`, `gitcomet`, `lazygit`,
-`limine-snapper-sync`, `protonplus`, and `tuios` check for stable upstream releases every
+`limine-snapper-sync`, `omp-gui`, `protonplus`, and `tuios` check for stable upstream releases every
 6 hours and can also be run manually. They update each package's spec, reset
 the RPM release to `1`, commit the change, and trigger a build in
 `lemmy/favorites` when its latest successful version differs from upstream.
 
 limine-snapper-sync releases are fetched from GitLab; the others use GitHub.
-ProtonPlus updates also refresh the source archive SHA256 checked by its spec.
+ProtonPlus and omp-gui updates also refresh the source SHA256 checked by their specs.
 
 These workflows use the existing `COPR_CONFIG` repository secret. Each COPR
 package must build from this repository's default branch using its spec.
@@ -76,3 +76,19 @@ sudo dnf install tuios
 
 Builds the stable upstream release from source with the default pure-Go terminal
 backend. Requires a true-color terminal; run `tuios` to start a session.
+
+## omp GUI
+
+```sh
+sudo dnf install omp-gui
+```
+
+Repackages the stable upstream Linux x86_64 release, including Electron and the
+bundled omp agent; no separate omp, Bun, or Node installation is required.
+Launch `omp-gui` or use the application-menu entry, with the upstream icon and
+`omp://` link handling. The package does not replace the `omp` CLI.
+
+The update workflow checks every 6 hours and can also be run manually. It waits
+until the release's Linux `.deb` asset is available, refreshes its SHA256 and
+the spec version, and triggers the `omp-gui` COPR package build. Installed
+packages receive new builds through normal DNF updates.
