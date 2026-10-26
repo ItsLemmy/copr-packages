@@ -19,8 +19,11 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(jemalloc)
 BuildRequires:  pkgconfig(lcms2)
+BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
+BuildRequires:  pkgconfig(libeis-1.0) >= 1.3
 BuildRequires:  pkgconfig(libinput) >= 1.27
+BuildRequires:  pkgconfig(libsystemd) >= 243
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
@@ -29,6 +32,9 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-ewmh)
+BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  systemd-rpm-macros
 

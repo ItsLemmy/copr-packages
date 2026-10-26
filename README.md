@@ -32,6 +32,10 @@ Log out and back in to use an updated compositor. Upgrades no longer restart
 Umbriel, but upgrading from an older build can still end the session: run that
 upgrade from a TTY after logging out.
 
+The snapshot spec declares Umbriel's direct Meson dependencies explicitly,
+including `libeis-1.0 >= 1.3`, `libdisplay-info >= 0.3.0`, `libsystemd >= 243`,
+and the XCB libraries, rather than relying on transitive wlroots dependencies.
+
 ## Noctalia Greeter
 
 ```sh
