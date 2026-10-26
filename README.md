@@ -91,6 +91,9 @@ Repackages the stable upstream Linux x86_64 release, including Electron and the
 bundled omp agent; no separate omp, Bun, or Node installation is required.
 Launch `omp-gui` or use the application-menu entry, with the upstream icon and
 `omp://` link handling. The package does not replace the `omp` CLI.
+The build adds a Rosé Pine entry to the GUI's built-in themes
+(`omp-gui/rose-pine-themes.json`, applied by `omp-gui/add-gui-themes.py`); the
+build fails if a new upstream release changes the bundle layout the patch expects.
 
 The update workflow checks every 6 hours and can also be run manually. It waits
 until the release's Linux `.deb` asset is available, refreshes its SHA256 and
