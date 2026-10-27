@@ -2,15 +2,15 @@
 %global __strip /bin/true
 %global _build_id_links none
 %global appdir /opt/omp-gui
-%global SHA256SUM0 db472f7a21fd2511b9ae06712a07928c18e4789a2fc004638182561e0f6cf678
+%global SHA256SUM0 7128111bcd816f46b995b5a963e1fdfe17fe17089535c474fea0dd5bfaa88346
 
 # Bundled Electron libraries are private, not system library providers.
 %global __provides_exclude_from ^%{appdir}/.*$
 %global __requires_exclude ^(libEGL|libGLESv2|libffmpeg|libvk_swiftshader|libvulkan)\\.so.*\\(64bit\\)$
 
 Name:           omp-gui
-Version:    0.9.30
-Release:    2%{?dist}
+Version:    0.9.31
+Release:    1%{?dist}
 Summary:        Desktop GUI for the omp coding agent
 
 # Application license; bundled Electron/Chromium notices are shipped alongside it.
