@@ -39,7 +39,7 @@ ScreenCast and Screenshot. Includes the GTK4 screen and window share picker.
 %autosetup -n xdg-desktop-portal-umbriel-@COMMIT@
 
 %build
-%meson -Dpicker=enabled
+%meson -Dpicker=enabled -Dtests=false
 %meson_build
 
 %install
