@@ -1,10 +1,10 @@
 %global debug_package %{nil}
 %global __strip /bin/true
 %global triple x86_64-unknown-linux-gnu
-%global upstream_version 1.1.1
+%global upstream_version 1.2.0-nightly.20261101
 
 Name:           strata
-Version:        1.1.1
+Version:        1.2.0~nightly.20261101
 Release:        1%{?dist}
 Summary:        Fast, keyboard-first GTK4 file manager with Miller columns
 
