@@ -22,6 +22,24 @@ These workflows use the existing `COPR_CONFIG` repository secret. Each COPR
 package must build from this repository's default branch using its spec.
 GitHub Actions must be allowed to push to that branch.
 
+## Protokol
+
+```sh
+sudo dnf install protokol
+```
+
+Repackages Hexler's proprietary freeware for x86_64 and aarch64 with upstream
+icons and an application-menu entry. Launch with `protokol`. Redistribution
+was approved by Hexler support on the condition that updates are automated.
+
+The workflow checks [Hexler's releases](https://hexler.net/protokol/releases)
+daily at 05:23 UTC and can also be run manually. It selects the newest Linux
+release available for both architectures, verifies upstream SHA256 checksums,
+updates the spec and pinned checksums, and triggers the `protokol` package in
+`lemmy/favorites` using `COPR_CONFIG`. The RPM version includes Hexler's build
+number to detect build-only updates. Configure that COPR package to build from
+`protokol/protokol.spec` on this repository's default branch.
+
 ## Umbriel
 
 ```sh
