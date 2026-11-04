@@ -76,7 +76,7 @@ jobs:
           rpmbuild -bs ~/rpmbuild/SPECS/umbriel-git.spec --define "_topdir $HOME/rpmbuild"
           srpm="$HOME/rpmbuild/SRPMS/umbriel-git-${version}-1.src.rpm"
           test -f "$srpm"
-          copr-cli build --nowait favorites "$srpm"
+          copr-cli build --nowait --exclude-chroot fedora-43-x86_64 favorites "$srpm"
 
       - name: No update needed
         if: "startsWith(steps.upstream.outputs.commit, steps.copr.outputs.shortcommit) && steps.copr.outputs.shortcommit != ''"

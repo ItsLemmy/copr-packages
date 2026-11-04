@@ -53,6 +53,9 @@ Log out and back in to use an updated compositor. Upgrades no longer restart
 Umbriel, but upgrading from an older build can still end the session: run that
 upgrade from a TTY after logging out.
 
+Umbriel packages are built for Fedora 44 and newer only; Fedora 43 lacks
+`wlroots-0.20` and `libdisplay-info >= 0.3.0`.
+
 The snapshot spec declares Umbriel's direct Meson dependencies explicitly,
 including `libeis-1.0 >= 1.3`, `libdisplay-info >= 0.3.0`, `libsystemd >= 243`,
 and the XCB libraries, rather than relying on transitive wlroots dependencies.
