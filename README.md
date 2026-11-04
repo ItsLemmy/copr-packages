@@ -40,6 +40,9 @@ updates the spec and pinned checksums, and triggers the `protokol` package in
 number to detect build-only updates. Configure that COPR package to build from
 `protokol/protokol.spec` on this repository's default branch.
 
+The source RPM includes both architecture payloads; binary builds select and
+verify the matching one, regardless of the source builder's architecture.
+
 ## Umbriel
 
 ```sh
