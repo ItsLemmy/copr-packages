@@ -43,6 +43,27 @@ number to detect build-only updates. Configure that COPR package to build from
 The source RPM includes both architecture payloads; binary builds select and
 verify the matching one, regardless of the source builder's architecture.
 
+## KodeLife
+
+```sh
+sudo dnf install kodelife
+```
+
+Repackages [Hexler's KodeLife](https://hexler.net/kodelife), a proprietary
+real-time GPU shader editor, for x86_64 and aarch64. Launch with `kodelife`
+or the application-menu entry. Includes upstream application and project icons,
+the `.klproj` MIME type, and file-opening support. The package does not include
+a license key or change the application's licensing.
+See the [upstream EULA](https://hexler.net/kodelife/eula).
+
+The GitHub Actions workflow checks Hexler's releases daily at 05:43 UTC and
+supports manual runs. Like Protokol, it waits for both Linux architectures,
+verifies upstream SHA256 checksums, updates the spec and pinned checksums,
+and triggers the `kodelife` package in `lemmy/favorites` using `COPR_CONFIG`.
+The RPM version includes the upstream build number. Both payloads are included
+in the source RPM to support source builders of either architecture.
+The COPR package uses `kodelife/kodelife.spec` on this repository's default branch.
+
 ## Umbriel
 
 ```sh
