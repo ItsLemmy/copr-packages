@@ -28,7 +28,7 @@ jobs:
           import re
           from pathlib import Path
           html = Path('/tmp/kodelife-releases.html').read_text()
-          releases = re.findall(r'href=["\']/pub/kodelife/kodelife-(\d+\.\d+\.\d+\.\d+)-linux-(x64|arm64)\.deb["\']', html)
+          releases = re.findall(r'href=["\'][^"\']*/kodelife/kodelife-(\d+\.\d+\.\d+\.\d+)-linux-(x64|arm64)\.deb["\']', html)
           complete = {v for v, arch in releases if all((v, a) in releases for a in ('x64', 'arm64'))}
           if not complete:
               raise SystemExit('No Linux release with both x64 and arm64 Debian packages found')
@@ -74,7 +74,7 @@ jobs:
           trap 'rm -rf "$work"' EXIT
           for arch in x64 arm64; do
             file="kodelife-${VERSION}-linux-${arch}.deb"
-            base="https://hexler.net/pub/kodelife"
+            base="https://downloads.hexler.net/kodelife"
             curl -fL -o "$work/$file" "$base/$file"
             curl -fL -o "$work/$file.sha" "$base/$file.sha"
             (cd "$work" && sha256sum --check "$file.sha")

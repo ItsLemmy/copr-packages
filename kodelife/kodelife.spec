@@ -19,8 +19,8 @@ Summary:        Real-time GPU shader editor
 License:        LicenseRef-Proprietary
 URL:            https://hexler.net/kodelife
 # Both payloads must be present regardless of the source builder's architecture.
-Source0:        https://hexler.net/pub/kodelife/%{name}-%{version}-linux-x64.deb
-Source1:        https://hexler.net/pub/kodelife/%{name}-%{version}-linux-arm64.deb
+Source0:        https://downloads.hexler.net/kodelife/%{name}-%{version}-linux-x64.deb
+Source1:        https://downloads.hexler.net/kodelife/%{name}-%{version}-linux-arm64.deb
 ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  binutils

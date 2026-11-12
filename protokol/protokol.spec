@@ -18,8 +18,8 @@ Summary:        MIDI, OSC, Art-Net and gamepad protocol monitor
 # Proprietary freeware; redistribution approved by Hexler support.
 License:        LicenseRef-Proprietary
 URL:            https://hexler.net/protokol
-Source0:        https://hexler.net/pub/protokol/%{name}-%{version}-linux-x64.deb
-Source1:        https://hexler.net/pub/protokol/%{name}-%{version}-linux-arm64.deb
+Source0:        https://downloads.hexler.net/protokol/%{name}-%{version}-linux-x64.deb
+Source1:        https://downloads.hexler.net/protokol/%{name}-%{version}-linux-arm64.deb
 ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  binutils
