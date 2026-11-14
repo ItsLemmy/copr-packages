@@ -10,7 +10,7 @@ sudo dnf install <package>
 ## Stable release updates
 
 GitHub Actions workflows for `cava`, `dotter`, `gitcomet`, `lazygit`,
-`limine-snapper-sync`, `omp-gui`, `protonplus`, and `tuios` check for stable upstream releases every
+`limine-snapper-sync`, `omp-gui`, `protonplus`, `rhun`, and `tuios` check for stable upstream releases every
 6 hours and can also be run manually. They update each package's spec, reset
 the RPM release to `1`, commit the change, and trigger a build in
 `lemmy/favorites` when its latest successful version differs from upstream.
@@ -116,6 +116,18 @@ so the final stable release sorts newer than its prereleases.
 
 It does not set Strata as the default file manager or system file chooser;
 see `strata --help` for those options.
+
+## rhun
+
+```sh
+sudo dnf install rhun
+```
+
+Repackages the stable upstream Linux x86_64 release of
+[rhun](https://github.com/vshvedov/rhun), a code editor written in assembly
+(static binary, desktop entry, `rhun://` link handler, icons). The workflow
+checks for a new tagged release daily at 05:17 UTC and can also be run
+manually; it bumps `rhun/rhun.spec` and triggers the `rhun` COPR package.
 
 ## TUIOS
 
