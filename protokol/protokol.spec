@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 %global __strip /bin/true
-%global SHA256SUM_x64 79b35b62c5b25c3fa20c782d76b9049dd1db33647fa182b3d54f6e7fb8b20ae2
-%global SHA256SUM_arm64 fed369f6be3cf46bcfaf4704992e5bb29484d344404bc6b0450d0f232717e3b0
+%global SHA256SUM_x64 0aea2de4a316f70f73cf909df82b35e73f6b1a0d5051571d516e202165452cd8
+%global SHA256SUM_arm64 56c6a74a9ca0c7be12e4cdcdd3dacea0626c354d9eb17f9a8ed0e9967d5b8c97
 %ifarch x86_64
 %global source_file %{SOURCE0}
 %global source_sha256 %{SHA256SUM_x64}
@@ -11,8 +11,8 @@
 %endif
 
 Name:           protokol
-Version:        0.6.8.141
-Release:        2%{?dist}
+Version:        0.6.9.142
+Release:        1%{?dist}
 Summary:        MIDI, OSC, Art-Net and gamepad protocol monitor
 
 # Proprietary freeware; redistribution approved by Hexler support.
