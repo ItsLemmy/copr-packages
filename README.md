@@ -97,6 +97,8 @@ user = "greetd"
 
 The package creates `/var/lib/noctalia-greeter` for the `greetd` user.
 
+Built for Fedora 44 and newer only; Fedora 43 lacks `wlroots-0.20`.
+
 ## Building Fluxer Canary
 
 `fluxer-canary/generate-srpm.sh <resultdir>` generates the spec from the latest
