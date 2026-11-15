@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           limine-snapper-sync
-Version:    1.32.1
+Version:    1.33.0
 Release:    1%{?dist}
 Summary:        Synchronize Limine bootloader entries with Snapper Btrfs snapshots
 
