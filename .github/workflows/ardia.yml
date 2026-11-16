@@ -1,0 +1,88 @@
+name: ardia daily update
+
+on:
+  schedule:
+    - cron: "53 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ardia-update
+  cancel-in-progress: false
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select newest Linux release and verify checksum
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          release=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" \
+            'https://api.github.com/repos/ardia-browser/ardia/releases?per_page=100' \
+            | jq -ce '[.[] | select(.draft == false) | select(.tag_name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+(-[a-z]+\\.[0-9]+)?$"))
+              | . as $r | select(any(.assets[]; .name == ("Ardia-" + ($r.tag_name | ltrimstr("v")) + "-linux-x64.deb")))]
+              | sort_by(.published_at) | last | select(. != null)')
+          tag=$(jq -r .tag_name <<< "$release")
+          upstream_version=${tag#v}
+          version=${upstream_version/-/\~}
+          asset=$(jq -ce --arg name "Ardia-$upstream_version-linux-x64.deb" '.assets[] | select(.name == $name)' <<< "$release")
+          sha256=$(jq -r '.digest | sub("^sha256:"; "")' <<< "$asset")
+          [[ "$sha256" =~ ^[0-9a-f]{64}$ ]]
+          current=$(sed -n 's/^Version:[[:space:]]*//p' ardia/ardia.spec)
+          if [[ "$current" != "$version" ]]; then
+            curl -fL -o /tmp/ardia.deb "$(jq -r .browser_download_url <<< "$asset")"
+            echo "$sha256  /tmp/ardia.deb" | sha256sum -c -
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "upstream_version=$upstream_version" >> "$GITHUB_OUTPUT"
+          echo "sha256=$sha256" >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+
+      - name: Update spec and commit
+        if: steps.upstream.outputs.version != steps.upstream.outputs.current
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          UPSTREAM_VERSION: ${{ steps.upstream.outputs.upstream_version }}
+          SHA256: ${{ steps.upstream.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          sed -i -e "s/^Version:.*/Version:        $VERSION/" \
+            -e 's/^Release:.*/Release:        1%{?dist}/' \
+            -e "s/^%global upstream_version .*/%global upstream_version $UPSTREAM_VERSION/" \
+            -e "s/^%global SHA256SUM .*/%global SHA256SUM $SHA256/" ardia/ardia.spec
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am "ardia $VERSION"
+          git push
+
+      - name: Check COPR and trigger build
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          set -euo pipefail
+          response=$(mktemp)
+          trap 'rm -f "$response"' EXIT
+          status=$(curl -sS -o "$response" -w '%{http_code}' 'https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=ardia&with_latest_succeeded_build=True')
+          if [[ "$status" == 404 ]]; then
+            current=''
+          elif [[ "$status" =~ ^2 ]]; then
+            current=$(jq -r '.builds.latest_succeeded.source_package.version // ""' "$response" | sed 's/-[^-]*$//')
+          else
+            cat "$response" >&2
+            exit 1
+          fi
+          if [[ "$current" != "$VERSION" ]]; then
+            sudo pip3 install copr-cli
+            mkdir -p ~/.config
+            printf '%s\n' "$COPR_CONFIG" > ~/.config/copr
+            chmod 600 ~/.config/copr
+            copr-cli build-package --name ardia --nowait favorites
+          fi
