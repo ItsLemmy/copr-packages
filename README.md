@@ -33,12 +33,12 @@ x86_64 browser, including nightly prereleases, with its desktop entry, icon,
 password reauthentication policy and Chromium sandbox helper. Launch with
 `ardia`. The package does not change the default browser or disable the sandbox.
 
-The workflow checks daily at 05:53 UTC and supports manual runs. It selects
+The workflow checks every 6 hours at 00:53, 06:53, 12:53 and 18:53 UTC and supports manual runs. It selects
 the newest published versioned release with a Linux `.deb`, verifies its
 GitHub SHA256 digest, updates the pinned spec and triggers `ardia` in
 `lemmy/favorites` using `COPR_CONFIG`. RPM versions use `~` for prereleases.
 Configure that COPR package to build from `ardia/ardia.spec` on this
-repository's default branch. Daily checks build only when the newest release
+repository's default branch. Checks build only when the newest release
 differs from the latest successful COPR build.
 
 ## Protokol
