@@ -5,7 +5,7 @@
 
 Name:           ardia
 Version:        0.2.47~nightly.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Chromium browser with a sidebar and built-in ad blocking
 License:        GPL-3.0-only AND Apache-2.0 AND BSD-3-Clause AND MIT
 URL:            https://github.com/ardia-browser/ardia
@@ -64,6 +64,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/ardia.desktop
 
 %files -f ardia.files
 %license LICENSE LICENSE.Apache-2.0 NOTICE
+%doc %{_docdir}/%{name}/
 %{_bindir}/ardia
 %dir /usr/lib/ardia
 %attr(4755,root,root) /usr/lib/ardia/chrome-sandbox

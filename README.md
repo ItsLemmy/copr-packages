@@ -30,7 +30,7 @@ sudo dnf install ardia
 
 Repackages [Ardia's](https://github.com/ardia-browser/ardia) upstream Linux
 x86_64 browser, including nightly prereleases, with its desktop entry, icon,
-password reauthentication policy and Chromium sandbox helper. Launch with
+password reauthentication policy, upstream documentation and Chromium sandbox helper. Launch with
 `ardia`. The package does not change the default browser or disable the sandbox.
 
 The workflow checks every 6 hours at 00:53, 06:53, 12:53 and 18:53 UTC and supports manual runs. It selects
