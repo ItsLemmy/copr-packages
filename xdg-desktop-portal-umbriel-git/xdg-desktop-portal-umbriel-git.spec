@@ -9,20 +9,32 @@ Source0:        %{url}/archive/@COMMIT@.tar.gz#/xdg-desktop-portal-umbriel-@COMM
 
 ExclusiveArch:  aarch64 x86_64
 
+BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
+BuildRequires:  stb_image_resize2-devel
 BuildRequires:  pkgconfig(cairo)
+BuildRequires:  pkgconfig(cairo-ft)
+BuildRequires:  pkgconfig(egl)
+BuildRequires:  pkgconfig(fontconfig)
+BuildRequires:  pkgconfig(freetype2)
 BuildRequires:  pkgconfig(gbm)
-BuildRequires:  pkgconfig(gio-2.0)
-BuildRequires:  pkgconfig(gtk4) >= 4.12
+BuildRequires:  pkgconfig(glesv2)
+BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(nlohmann_json)
+BuildRequires:  pkgconfig(pango) >= 1.50
+BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(pangoft2)
 BuildRequires:  pkgconfig(sdbus-c++) >= 2.0
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.39
+BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  /usr/bin/wayland-scanner
 BuildRequires:  systemd-rpm-macros
 
@@ -33,23 +45,25 @@ Conflicts:      xdg-desktop-portal-umbriel
 
 %description
 An XDG desktop portal backend for the Umbriel Wayland compositor, implementing
-ScreenCast and Screenshot. Includes the GTK4 screen and window share picker.
+ScreenCast and Screenshot. Includes the noctalia-ui screen and window share
+picker.
 
 %prep
 %autosetup -n xdg-desktop-portal-umbriel-@COMMIT@
 
 %build
-%meson -Dpicker=enabled -Dtests=false
+%meson -Dpicker=true -Dtests=false
 %meson_build
 
 %install
 %meson_install
 
 %files
-%license LICENSE
+%license LICENSE lib/assets/fonts/tabler-icons-license.txt
 %doc README.md
 %{_libexecdir}/xdg-desktop-portal-umbriel
 %{_libexecdir}/umbriel-share-picker
+%{_datadir}/xdg-desktop-portal-umbriel/
 %{_datadir}/xdg-desktop-portal/portals/umbriel.portal
 %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 %{_datadir}/dbus-1/services/org.freedesktop.impl.portal.desktop.umbriel.service
