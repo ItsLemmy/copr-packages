@@ -1,11 +1,11 @@
 %global debug_package %{nil}
 %global __strip /bin/true
-%global upstream_version 0.2.47-nightly.6
-%global SHA256SUM 2f89818c6a130104a4677357039c68e83e615371ae90c5a26f941be25ff86e84
+%global upstream_version 0.2.47-nightly.9
+%global SHA256SUM b2ba866e6f49e079d1ecb5aa3cd30ab41af187036700aaf1b1cce859e2836eab
 
 Name:           ardia
-Version:        0.2.47~nightly.6
-Release:        2%{?dist}
+Version:        0.2.47~nightly.9
+Release:        1%{?dist}
 Summary:        Chromium browser with a sidebar and built-in ad blocking
 License:        GPL-3.0-only AND Apache-2.0 AND BSD-3-Clause AND MIT
 URL:            https://github.com/ardia-browser/ardia
