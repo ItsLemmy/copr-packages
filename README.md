@@ -135,21 +135,6 @@ packages.
 `fluxer-canary/generate-srpm.sh <resultdir>` generates the spec from the latest
 canary release.
 
-## Strata
-
-```sh
-sudo dnf install strata
-```
-
-Repackages upstream prebuilt binaries, including alpha, beta, RC, and nightly
-prereleases. A GitHub Actions workflow checks every 6 hours for the most recently
-published release, verifies its archive checksum when updating, bumps
-`strata/strata.spec`, and triggers the COPR build. RPM prerelease versions use `~`
-so the final stable release sorts newer than its prereleases.
-
-It does not set Strata as the default file manager or system file chooser;
-see `strata --help` for those options.
-
 ## rhun
 
 ```sh
