@@ -118,6 +118,18 @@ The package creates `/var/lib/noctalia-greeter` for the `greetd` user.
 
 Built for Fedora 44 and newer only; Fedora 43 lacks `wlroots-0.20`.
 
+## Luciole
+
+```sh
+sudo dnf install luciole-git
+```
+
+Nightly snapshot of [Luciole](https://github.com/noctalia-dev/luciole), the
+Noctalia Wayland file manager. Ships its FileManager1 D-Bus service and
+FileChooser portal backend; neither is selected by default (see upstream
+`PACKAGING.md`). Built for Fedora 44 and newer only, like the other Noctalia
+packages.
+
 ## Building Fluxer Canary
 
 `fluxer-canary/generate-srpm.sh <resultdir>` generates the spec from the latest
