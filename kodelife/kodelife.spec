@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 %global __strip /bin/true
-%global SHA256SUM_x64 36a360e1edc03771bac74b253088ae505cf944e56b07987eccb08e82dd25aed5
-%global SHA256SUM_arm64 abd8338a974c94ca50105521cad0eedca0ccbbbf2f69c3012b1f7603077c6b22
+%global SHA256SUM_x64 3638d61126deb938158162609e73ce7104375749c8ab1b6c4d783162f70583e0
+%global SHA256SUM_arm64 ca6635d17c8f5640bbdfb227857997e68341e6b1d6e903bb92f22ebe7c4edf0a
 %ifarch x86_64
 %global source_file %{SOURCE0}
 %global source_sha256 %{SHA256SUM_x64}
@@ -11,7 +11,7 @@
 %endif
 
 Name:           kodelife
-Version:        1.3.0.214
+Version:        1.3.0.216
 Release:        1%{?dist}
 Summary:        Real-time GPU shader editor
 
