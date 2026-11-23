@@ -41,6 +41,22 @@ Configure that COPR package to build from `ardia/ardia.spec` on this
 repository's default branch. Checks build only when the newest release
 differs from the latest successful COPR build.
 
+## Compass
+
+```sh
+sudo dnf install compass
+```
+
+Repackages [Compass's](https://github.com/Compass-Browser/Compass) upstream
+Linux x86_64 tarball, including prereleases, into `/usr/lib/compass` with a
+desktop entry, icons and the setuid Chromium sandbox helper. Launch with `compass`.
+
+The workflow checks daily at 05:33 UTC and
+supports manual runs. It selects the newest published release with a Linux
+`.tar.xz` (most upstream builds have none), verifies its GitHub SHA256 digest,
+updates the spec and triggers `compass` in `lemmy/favorites`. Configure that
+COPR package to build from `compass/compass.spec` on the default branch.
+
 ## Protokol
 
 ```sh
