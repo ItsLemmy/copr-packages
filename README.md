@@ -57,6 +57,25 @@ supports manual runs. It selects the newest published release with a Linux
 updates the spec and triggers `compass` in `lemmy/favorites`. Configure that
 COPR package to build from `compass/compass.spec` on the default branch.
 
+## Acira Browser
+
+```sh
+sudo dnf install acira-browser
+```
+
+Repackages [Acira's](https://acirabrowser.com) upstream Linux x86_64 AppImage
+(beta channel; Insiders builds are skipped) into `/usr/lib/acira-browser` with its
+desktop entry, icon, password reauthentication polkit policy and the setuid
+Chromium sandbox helper. Launch with `acira-browser`. Acira's self-updater only
+works inside the AppImage, so it stays inactive; updates arrive through DNF.
+
+The workflow checks every 6 hours at minute 13 and supports manual runs. It
+selects the newest `v<version>-linux-<commit>` release with an AppImage and setup
+files, verifies their GitHub SHA256 digests, updates the spec and triggers
+`acira-browser` in `lemmy/favorites`. RPM versions use `~` for the beta suffix.
+Configure that COPR package to build from `acira-browser/acira-browser.spec` on
+the default branch.
+
 ## Protokol
 
 ```sh

@@ -1,0 +1,104 @@
+name: acira-browser update check
+
+on:
+  schedule:
+    - cron: "13 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: acira-browser-update
+  cancel-in-progress: false
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select newest Linux release and verify checksums
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Linux tags are v<version>-linux-<commit>; Insiders tags are skipped.
+          release=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" \
+            'https://api.github.com/repos/Acira-dev/AciraBrowserUpdates/releases?per_page=100' \
+            | jq -ce '[.[] | select(.draft == false) | select(.tag_name | test("^v[0-9][0-9A-Za-z.-]*-linux-[0-9a-f]+$"))
+              | (.tag_name | capture("^v(?<v>.+)-linux-[0-9a-f]+$").v) as $v
+              | select(any(.assets[]; .name == ("AciraBrowser-" + $v + "-linux-x86_64.AppImage")))
+              | select(any(.assets[]; .name == "AciraBrowser-Linux-SetupFiles.zip"))]
+              | sort_by(.published_at) | last | select(. != null)')
+          tag=$(jq -r .tag_name <<< "$release")
+          upstream_version=$(sed -E 's/^v(.+)-linux-[0-9a-f]+$/\1/' <<< "$tag")
+          version=${upstream_version/-/\~}
+          digest() { jq -r --arg name "$1" '.assets[] | select(.name == $name) | .digest | sub("^sha256:"; "")' <<< "$release"; }
+          url() { jq -r --arg name "$1" '.assets[] | select(.name == $name) | .browser_download_url' <<< "$release"; }
+          appimage=AciraBrowser-$upstream_version-linux-x86_64.AppImage
+          sha256=$(digest "$appimage")
+          setup_sha256=$(digest AciraBrowser-Linux-SetupFiles.zip)
+          [[ "$sha256" =~ ^[0-9a-f]{64}$ && "$setup_sha256" =~ ^[0-9a-f]{64}$ ]]
+          current=$(sed -n 's/^%global upstream_tag //p' acira-browser/acira-browser.spec)
+          if [[ "$current" != "$tag" ]]; then
+            curl -fL -o /tmp/acira.AppImage "$(url "$appimage")"
+            curl -fL -o /tmp/acira-setup.zip "$(url AciraBrowser-Linux-SetupFiles.zip)"
+            printf '%s  %s\n' "$sha256" /tmp/acira.AppImage "$setup_sha256" /tmp/acira-setup.zip | sha256sum -c -
+          fi
+          {
+            echo "tag=$tag"
+            echo "upstream_version=$upstream_version"
+            echo "version=$version"
+            echo "sha256=$sha256"
+            echo "setup_sha256=$setup_sha256"
+            echo "current=$current"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update spec and commit
+        if: steps.upstream.outputs.tag != steps.upstream.outputs.current
+        env:
+          TAG: ${{ steps.upstream.outputs.tag }}
+          UPSTREAM_VERSION: ${{ steps.upstream.outputs.upstream_version }}
+          VERSION: ${{ steps.upstream.outputs.version }}
+          SHA256: ${{ steps.upstream.outputs.sha256 }}
+          SETUP_SHA256: ${{ steps.upstream.outputs.setup_sha256 }}
+        run: |
+          set -euo pipefail
+          sed -i -e "s/^Version:.*/Version:        $VERSION/" \
+            -e 's/^Release:.*/Release:        1%{?dist}/' \
+            -e "s/^%global upstream_version .*/%global upstream_version $UPSTREAM_VERSION/" \
+            -e "s/^%global upstream_tag .*/%global upstream_tag $TAG/" \
+            -e "s/^%global SHA256SUM .*/%global SHA256SUM $SHA256/" \
+            -e "s/^%global SETUP_SHA256SUM .*/%global SETUP_SHA256SUM $SETUP_SHA256/" \
+            acira-browser/acira-browser.spec
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am "acira-browser $VERSION"
+          git push
+
+      - name: Check COPR and trigger build
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          set -euo pipefail
+          response=$(mktemp)
+          trap 'rm -f "$response"' EXIT
+          status=$(curl -sS -o "$response" -w '%{http_code}' 'https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=acira-browser&with_latest_succeeded_build=True')
+          if [[ "$status" == 404 ]]; then
+            current=''
+          elif [[ "$status" =~ ^2 ]]; then
+            current=$(jq -r '.builds.latest_succeeded.source_package.version // ""' "$response" | sed 's/-[^-]*$//')
+          else
+            cat "$response" >&2
+            exit 1
+          fi
+          if [[ "$current" != "$VERSION" ]]; then
+            sudo pip3 install copr-cli
+            mkdir -p ~/.config
+            printf '%s\n' "$COPR_CONFIG" > ~/.config/copr
+            chmod 600 ~/.config/copr
+            copr-cli build-package --name acira-browser --nowait favorites
+          fi
