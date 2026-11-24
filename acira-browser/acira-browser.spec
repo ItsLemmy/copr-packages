@@ -10,7 +10,7 @@
 
 Name:           acira-browser
 Version:        0.1.0~beta.13.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Calm Electron browser with private and Tor tabs, workspaces and ad blocking
 License:        AGPL-3.0-only AND GPL-3.0-only AND MPL-2.0 AND MIT AND BSD-3-Clause AND BSD-2-Clause AND Apache-2.0 AND ISC AND CC-BY-3.0
 URL:            https://acirabrowser.com
@@ -63,6 +63,8 @@ install -Dm644 usr/share/icons/hicolor/512x512/apps/AciraBrowser.png \
     %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/acira-browser.png
 install -Dm644 ../setup/computer.acira.browser.policy \
     %{buildroot}%{_datadir}/polkit-1/actions/computer.acira.browser.policy
+# The AppImage ships 0700 directories (resources, locales); users must be able to read them.
+chmod -R go+rX %{buildroot}/usr/lib/acira-browser
 chmod 4755 %{buildroot}/usr/lib/acira-browser/chrome-sandbox
 find %{buildroot}/usr/lib/acira-browser -mindepth 1 ! -path '*/chrome-sandbox' \
     -printf '/usr/lib/acira-browser/%%P\n' | while read -r path; do
