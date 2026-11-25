@@ -2,8 +2,8 @@
 %global __strip /bin/true
 
 Name:           rhun
-Version:        0.19.2
-Release:        1%{?dist}
+Version:    0.20.0
+Release:    1%{?dist}
 Summary:        Small and fast code editor written in assembly
 
 License:        MIT
