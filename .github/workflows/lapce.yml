@@ -1,0 +1,79 @@
+name: lapce update check
+
+on:
+  schedule:
+    - cron: "27 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapce-update
+  cancel-in-progress: false
+
+jobs:
+  check-and-build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check stable release and verify Linux tarball
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          release=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/lapce/lapce/releases/latest)
+          tag=$(jq -er '.tag_name' <<< "$release")
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          version=${tag#v}
+          asset=$(jq -ce '.assets[] | select(.name == "lapce-linux-amd64.tar.gz")' <<< "$release")
+          digest=$(jq -er '.digest' <<< "$asset")
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          sha256=${digest#sha256:}
+          current=$(sed -n 's/^Version:[[:space:]]*//p' lapce/lapce.spec)
+          if [[ "$current" != "$version" ]]; then
+            archive=$(mktemp)
+            trap 'rm -f "$archive"' EXIT
+            curl -fsSL -o "$archive" "https://github.com/lapce/lapce/releases/download/$tag/lapce-linux-amd64.tar.gz"
+            printf '%s  %s\n' "$sha256" "$archive" | sha256sum -c -
+          elif ! grep -Fxq "%global SHA256SUM $sha256" lapce/lapce.spec; then
+            echo "::error::Upstream changed the checksum for the pinned release $tag"
+            exit 1
+          fi
+          printf 'version=%s\nsha256=%s\ncurrent=%s\n' "$version" "$sha256" "$current" >> "$GITHUB_OUTPUT"
+
+      - name: Update spec and commit
+        if: steps.upstream.outputs.version != steps.upstream.outputs.current
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          SHA256: ${{ steps.upstream.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          sed -i -e "s/^Version:.*/Version:        $VERSION/" \
+            -e 's/^Release:.*/Release:        1%{?dist}/' \
+            -e "s/^%global SHA256SUM .*/%global SHA256SUM $SHA256/" lapce/lapce.spec
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "lapce $VERSION" -- lapce/lapce.spec
+          git push
+
+      - name: Check COPR and trigger build
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          set -euo pipefail
+          response=$(curl -fsS 'https://copr.fedorainfracloud.org/api_3/package?ownername=lemmy&projectname=favorites&packagename=lapce&with_latest_succeeded_build=True')
+          current=$(jq -r '.builds.latest_succeeded.source_package.version // "" | sub("-[^-]*$"; "")' <<< "$response")
+          if [[ "$current" == "$VERSION" ]]; then
+            echo "COPR is up to date ($current)"
+            exit 0
+          fi
+          sudo pip3 install copr-cli
+          mkdir -p ~/.config
+          (umask 077; printf '%s\n' "$COPR_CONFIG" > ~/.config/copr)
+          copr-cli build-package --name lapce --nowait lemmy/favorites

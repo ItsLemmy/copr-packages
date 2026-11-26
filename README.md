@@ -182,6 +182,22 @@ Repackages the stable upstream Linux x86_64 release of
 checks for a new tagged release daily at 05:17 UTC and can also be run
 manually; it bumps `rhun/rhun.spec` and triggers the `rhun` COPR package.
 
+## Lapce
+
+```sh
+sudo dnf install lapce
+```
+
+Repackages [Lapce's](https://github.com/lapce/lapce) stable Linux x86_64
+tarball with the upstream desktop entry, icon, and AppStream metadata.
+Lapce's self-updater is disabled in this binary; updates arrive through DNF.
+
+The workflow checks stable releases daily at 05:27 UTC and supports manual
+runs. It verifies new tarballs against GitHub's SHA-256 digest, updates the
+pinned spec, and triggers the `lapce` COPR build if that version has not built
+successfully. Configure the COPR package to build `lapce/lapce.spec` from
+this repository's default branch using the existing `COPR_CONFIG` secret.
+
 ## TUIOS
 
 ```sh
