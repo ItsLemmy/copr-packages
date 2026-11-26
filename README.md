@@ -76,6 +76,23 @@ files, verifies their GitHub SHA256 digests, updates the spec and triggers
 Configure that COPR package to build from `acira-browser/acira-browser.spec` on
 the default branch.
 
+## ilo
+
+```sh
+sudo dnf install ilo
+```
+
+Repackages [ilo's](https://github.com/MartinPTielemans/ilo) upstream Linux
+x86_64 Flatpak bundle into `/usr/lib/ilo` with its desktop entry, icon,
+AppStream metadata and enterprise policy path (`/etc/ilo/policies`), using
+Chromium's native namespace sandbox. Launch with `ilo`. Updates arrive through
+DNF.
+
+The workflow checks every 6 hours at minute 33 and supports manual runs. It
+selects the newest stable release with `ilo-linux-x86_64.flatpak`, verifies its
+GitHub SHA256 digest, updates the spec and triggers `ilo` in `lemmy/favorites`.
+Configure that COPR package to build from `ilo/ilo.spec` on the default branch.
+
 ## Protokol
 
 ```sh
