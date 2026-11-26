@@ -31,6 +31,7 @@ BuildRequires:  pkgconfig(libarchive)
 BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(sdl3)
+BuildRequires:  pkgconfig(yaml-0.1)
 
 # Need for TLS support
 Requires:       glib-networking
