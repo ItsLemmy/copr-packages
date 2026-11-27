@@ -3,13 +3,13 @@
 # Bundled Electron, Vulkan and Tor libraries must not satisfy or demand system sonames.
 %global __provides_exclude_from ^/usr/lib/acira-browser/.*$
 %global __requires_exclude ^lib(ffmpeg|vk_swiftshader|vulkan|ssl|crypto|event-2\\.1)\\.so
-%global upstream_version 0.1.0-beta.14.5
-%global upstream_tag v0.1.0-beta.14.5-linux-553cdd9c
-%global SHA256SUM fd1203526b9958e2802936c88aa2ea8d183a85b3180250227625dc32999f78b9
-%global SETUP_SHA256SUM 540c945f612df603fb450b0a6feb73974745c34e70000ac7287a3dfa067143de
+%global upstream_version 0.1.0-beta.14.6
+%global upstream_tag v0.1.0-beta.14.6-linux-04fd9323
+%global SHA256SUM acd7f7be08a838f9029ddb5a96748cc29be119c90d6ffa2f0d9dee0f356e660a
+%global SETUP_SHA256SUM cf19a643d7a3faac3943a85c1bbdab7d8c493932c2b76fcf216c6fe0a8b6e2b5
 
 Name:           acira-browser
-Version:        0.1.0~beta.14.5
+Version:        0.1.0~beta.14.6
 Release:        1%{?dist}
 Summary:        Calm Electron browser with private and Tor tabs, workspaces and ad blocking
 License:        AGPL-3.0-only AND GPL-3.0-only AND MPL-2.0 AND MIT AND BSD-3-Clause AND BSD-2-Clause AND Apache-2.0 AND ISC AND CC-BY-3.0
