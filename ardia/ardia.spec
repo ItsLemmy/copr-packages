@@ -60,7 +60,7 @@ find %{buildroot}/usr/lib/ardia -mindepth 1 ! -path '*/chrome-sandbox' \
 done > ardia.files
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/ardia.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/ardia*.desktop
 
 %files -f ardia.files
 %license LICENSE LICENSE.Apache-2.0 NOTICE
@@ -68,7 +68,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/ardia.desktop
 %{_bindir}/ardia
 %dir /usr/lib/ardia
 %attr(4755,root,root) /usr/lib/ardia/chrome-sandbox
-%{_datadir}/applications/ardia.desktop
+%{_datadir}/applications/ardia*.desktop
 %{_datadir}/icons/hicolor/256x256/apps/ardia.png
 %{_datadir}/polkit-1/actions/dev.ardia.linux.policy
 
