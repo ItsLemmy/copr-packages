@@ -53,6 +53,8 @@ Umbriel is a Wayland compositor designed for daily use, with scrolling, dwindle,
 %install
 %meson_install
 install -Dpm0644 umbrielfx/LICENSE %{buildroot}%{_licensedir}/%{name}/umbrielfx-LICENSE
+# Fedora uses systemd user units; upstream installs dinit services unconditionally.
+rm -r %{buildroot}%{_prefix}/lib/dinit.d
 
 %files
 %license LICENSE
