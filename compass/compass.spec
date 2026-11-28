@@ -1,9 +1,9 @@
 %global debug_package %{nil}
 %global __strip /bin/true
-%global SHA256SUM eb46c893cef33b5537e16a4cc2cdee781c8f14344c2a5a76b9481c23b80bac38
+%global SHA256SUM d0a66303c1b94182b622cfd593f242f4bff37415f1f3d1095ab3da0bb0da9718
 
 Name:           compass
-Version:        20261126.1710
+Version:        20261127.2339
 Release:        1%{?dist}
 Summary:        Chromium browser with a sidebar of spaces and account-free sync
 License:        BSD-3-Clause
